@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cold Kharid</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body style="background-color: #ecf1f5;">
-<div class="container" style="padding:40px; margin-top: 10vh; background-color: #ffffff; box-shadow: 3px 3px 50px #acacac; border-radius: 10px;">
+<div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
     <form action="#">
         <div class="form-row mb-4">
             <div class="col">
@@ -58,7 +50,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Mobile No.</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Buyer Contact No.">
+                    <select class="form-control">
+                        <option disabled selected>Buyer Contact No.</option>
+                        <option value="9719814140">9719814140</option>
+                        <option value="9675234150">9675234150</option>
+                        <option value="9675444150">9675444150</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -76,7 +73,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Type</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Potato Type">
+                    <select class="form-control">
+                        <option disabled selected>Select Potato Type</option>
+                        <option value="Gulla">Gulla</option>
+                        <option value="Mota">Mota</option>
+                        <option value="Kirri">Kirri</option>
+                    </select>
                 </div>
             </div>
             <div class="col">
@@ -102,15 +104,18 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Tol</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Tol">
+                    <select class="form-control">
+                        <option disabled selected>Select Tol</option>
+                        <option value="52.5">52.5 Kg/Packet</option>
+                        <option value="52.3">52.3 Kg/Packet</option>
+                        <option value="52.7">52.7 Kg/Packet</option>
+                    </select>
                 </div>
             </div>
             <div class="col">
-                <div class="input-group">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input">
-                        <label class="custom-file-label">Upload Slip Photo</label>
-                    </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
             </div>
             <div class="col-sm-2">
@@ -119,5 +124,3 @@
         </div>
     </form>
 </div>
-</body>
-</html>
