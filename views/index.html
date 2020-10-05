@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         body{
             background-color: #ecf1f5;
@@ -28,10 +30,12 @@
             font-weight: bold;
             border-left: #1eb69f 4px solid;
             padding: 20px 45px;
+            text-decoration: none;
         }
         .m-nav a:hover {
             background-color: #dbdbdb;
             transition: 0.3s;
+            text-decoration: none;
         }
         .m-font{
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -141,5 +145,38 @@
     function initLoad(){
         loadTab(dashboard);
     }
+
+    function showColdStoreInsertModal(option){
+        if(option.value==='add'){
+            $("#myModal").modal('show');
+        }
+    }
+
+    function saveColdStoreData(){
+        document.getElementById('add-cold-btn').innerHTML=
+            "<span class=\"spinner-border spinner-border-sm\"></span>&nbsp; Saving...";
+
+        $.ajax('/db/new_cold', { type: 'POST',
+            data: {
+                name: $('#cold-name').val(),
+                bag: $('#bag').val(),
+                due: $('#due').val()
+            },
+            success: function (data, status, xhr) {
+                if(jQuery.isEmptyObject(data)){
+                    window.alert('No Data');
+                }
+                else {
+                    window.alert(JSON.stringify(data));
+                }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                window.alert(errorMessage);
+            }
+        });
+        return false;
+    }
+
+
 </script>
 </html>

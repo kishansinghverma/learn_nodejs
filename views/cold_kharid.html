@@ -1,12 +1,27 @@
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica Neue">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
 <div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
-    <form action="#">
+    <form>
         <div class="form-row mb-4">
             <div class="col">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Cold Storage</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Select Cold Storage Name">
+                    <select id="cold-name-list" class="form-control" onchange="showColdStoreInsertModal(this)">
+                        <option disabled selected>Select Cold Storage Name</option>
+                        {{#coldStore}}
+                        <option value="{{name}}">{{name}}</option>
+                        {{/coldStore}}
+                        <option value="add">Add New Cold Store</option>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-4">
@@ -124,3 +139,84 @@
         </div>
     </form>
 </div>
+<div class="container">
+    <form onsubmit="return saveColdStoreData()">
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add New Cold Store</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row mb-4 mt-2 mr-5 ml-5">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Cold Storage</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Cold Storage Name" title="Provide Cold Name!" id="cold-name" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mb-4 mr-5 ml-5">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Bags</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Bags Already Stored" title="Enter Number Of Bags!" id="bag" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mb-2 mr-5 ml-5">
+                        <div class="col">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Dues</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Any Due Amount" title="Enter Due Amount!" id="due">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success col-sm-3" id="add-cold-btn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<script>
+    function showColdStoreInsertModal(option){
+        if(option.value==='add'){
+            $("#myModal").modal('show');
+        }
+    }
+    function saveColdStoreData(){
+        document.getElementById('add-cold-btn').innerHTML=
+            "<span class=\"spinner-border spinner-border-sm\"></span>&nbsp; Saving...";
+
+        $.ajax('/db/new_cold', { type: 'POST',
+            data: {
+                name: $('#cold-name').val(),
+                bag: $('#bag').val(),
+                due: $('#due').val()
+            },
+            success: function (data, status, xhr) {
+                if(jQuery.isEmptyObject(data)){
+                    window.alert('No Data');
+                }
+                else {
+                    window.alert(JSON.stringify(data));
+                }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                window.alert(errorMessage);
+            }
+        });
+        return false;
+    }
+</script>
+</body>
