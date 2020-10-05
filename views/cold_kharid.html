@@ -6,7 +6,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
 <div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
     <form>
         <div class="form-row mb-4">
@@ -140,7 +139,7 @@
     </form>
 </div>
 <div class="container">
-    <form onsubmit="return saveColdStoreData()">
+    <form onsubmit="return saveColdStoreData()" id="new-cold-form">
     <div class="modal fade" id="myModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -155,7 +154,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Cold Storage</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Cold Storage Name" title="Provide Cold Name!" id="cold-name" >
+                                <input type="text" class="form-control" placeholder="Cold Storage Name" title="Provide Cold Name!" id="cold-name" required>
                             </div>
                         </div>
                     </div>
@@ -165,7 +164,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Bags</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Bags Already Stored" title="Enter Number Of Bags!" id="bag" >
+                                <input type="text" class="form-control" placeholder="Bags Already Stored" pattern="[0-9]+" title="Enter Number Of Bags!" id="bag" required>
                             </div>
                         </div>
                     </div>
@@ -175,12 +174,13 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Dues</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Any Due Amount" title="Enter Due Amount!" id="due">
+                                <input type="text" class="form-control" placeholder="Any Due Amount" pattern="[0-9]+" title="Enter Due Amount!" id="due" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div id="new-cold-error" class="col m-font" style="color: #d54c36;"></div>
                     <button type="submit" class="btn btn-success col-sm-3" id="add-cold-btn">Save</button>
                 </div>
             </div>
@@ -189,34 +189,5 @@
     </form>
 </div>
 <script>
-    function showColdStoreInsertModal(option){
-        if(option.value==='add'){
-            $("#myModal").modal('show');
-        }
-    }
-    function saveColdStoreData(){
-        document.getElementById('add-cold-btn').innerHTML=
-            "<span class=\"spinner-border spinner-border-sm\"></span>&nbsp; Saving...";
-
-        $.ajax('/db/new_cold', { type: 'POST',
-            data: {
-                name: $('#cold-name').val(),
-                bag: $('#bag').val(),
-                due: $('#due').val()
-            },
-            success: function (data, status, xhr) {
-                if(jQuery.isEmptyObject(data)){
-                    window.alert('No Data');
-                }
-                else {
-                    window.alert(JSON.stringify(data));
-                }
-            },
-            error: function (jqXhr, textStatus, errorMessage) {
-                window.alert(errorMessage);
-            }
-        });
-        return false;
-    }
 </script>
 </body>

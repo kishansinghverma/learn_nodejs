@@ -11,14 +11,16 @@ const getList=async (collectionName, query)=> {
         const db = client.db();
         const collection = db.collection(collectionName);
         data = await collection.find(query).toArray();
+        client.close();
+        return data;
 
-    } catch (err) {console.log(err.stack);}
-
-    client.close();
-    return data;
+    } catch (err) {
+        console.log(err.stack);
+        return undefined;
+    }
 };
 
-const insertOne= async (collectionName, document)=>{
+const insertDoucument= async (collectionName, document)=>{
     let client;
     let res;
 
@@ -27,24 +29,27 @@ const insertOne= async (collectionName, document)=>{
         const db = client.db();
         const collection = db.collection(collectionName);
         res = await collection.insertOne(document);
+        client.close();
+        return res;
 
-    } catch (err) {console.log(err.stack);}
-
-    client.close();
-    return res;
-
+    } catch (err) {
+        console.log(err.stack);
+        return undefined;
+    }
 }
 
 async function getColdStoreNames(){
     const data=await getList('cold_store', {});
-    return data;
+    if(data!=undefined)
+        return data;
+    return {};
 }
 
 async function insertColdStoreName(name, bag, due){
     const document={name:name, bag:bag, due:due};
-    const res=await insertOne('cold_store', document);
+    const res=await insertDoucument('cold_store', document);
     if(res != undefined)
-        return (res.insertedCount===1)
+        return true;
     return false;
 }
 
