@@ -1,20 +1,12 @@
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica Neue">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
 <div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
-    <form>
+    <form action="/handler/cold_kharid" method="post" enctype="multipart/form-data">
         <div class="form-row mb-4">
             <div class="col">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Cold Storage</span>
                     </div>
-                    <select id="cold-name-list" class="form-control" onchange="showColdStoreInsertModal(this)">
+                    <select name="in-cold-name" id="cold-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
                         <option disabled selected>Select Cold Storage Name</option>
                         {{#coldStore}}
                         <option value="{{name}}">{{name}}</option>
@@ -28,7 +20,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Date</span>
                     </div>
-                    <input type="date" class="form-control">
+                    <input type="date" class="form-control" name="in-date" required>
                 </div>
             </div>
         </div>
@@ -38,16 +30,22 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Party Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Seller Party Name & Address">
+                    <input type="text" class="form-control" placeholder="Seller Party Name & Address" list="seller-name" onfocusout="getSellerMobile()" id="seller-name-input" name="in-seller-name" required>
                 </div>
+                <datalist id="seller-name">
+                    {{#seller}}
+                    <option value="{{name}}">
+                        {{/seller}}
+                </datalist>
             </div>
             <div class="col-sm-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Mobile No.</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Seller Contact No.">
+                    <input type="text" class="form-control" placeholder="Seller Contact No." list="seller-mobile" name="in-seller-mobile" pattern="[0-9]{10}" title="Enter Ten Digit Mobile Number!">
                 </div>
+                <datalist id="seller-mobile"></datalist>
             </div>
         </div>
         <div class="form-row mb-4">
@@ -56,21 +54,21 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Merchant Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Buyer Party Name & Address">
+                    <input type="text" class="form-control" placeholder="Buyer Party Name & Address" list="buyer-name" onfocusout="getBuyerMobile()" id="buyer-name-input" name="in-buyer-name" required>
                 </div>
+                <datalist id="buyer-name">
+                    <option value="Nem Singh">
+                    <option value="Mahesh Chand">
+                </datalist>
             </div>
             <div class="col-sm-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Mobile No.</span>
                     </div>
-                    <select class="form-control">
-                        <option disabled selected>Buyer Contact No.</option>
-                        <option value="9719814140">9719814140</option>
-                        <option value="9675234150">9675234150</option>
-                        <option value="9675444150">9675444150</option>
-                    </select>
+                    <input type="text" class="form-control" placeholder="Buyer Contact No." list="buyer-mobile" name="in-buyer-mobile" pattern="[0-9]{10}" title="Enter Ten Digit Mobile Number!">
                 </div>
+                <datalist id="buyer-mobile"></datalist>
             </div>
         </div>
         <div class="form-row mb-4">
@@ -79,7 +77,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Lot No.</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Lot Number">
+                    <input type="text" class="form-control" placeholder="Lot Number" name="in-lot" required>
                 </div>
             </div>
             <div class="col">
@@ -87,7 +85,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Type</span>
                     </div>
-                    <select class="form-control">
+                    <select class="form-control" name="in-type" id="type">
                         <option disabled selected>Select Potato Type</option>
                         <option value="Gulla">Gulla</option>
                         <option value="Mota">Mota</option>
@@ -100,7 +98,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Packets</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="No. Of Packets">
+                    <input type="text" class="form-control" placeholder="No. Of Packets" name="in-bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
                 </div>
             </div>
         </div>
@@ -110,7 +108,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Rate</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Rate">
+                    <input type="text" class="form-control" placeholder="Rate" name="in-rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
                 </div>
             </div>
             <div class="col-sm-3">
@@ -118,7 +116,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Tol</span>
                     </div>
-                    <select class="form-control">
+                    <select class="form-control" name="in-tol" id="tol">
                         <option disabled selected>Select Tol</option>
                         <option value="52.5">52.5 Kg/Packet</option>
                         <option value="52.3">52.3 Kg/Packet</option>
@@ -128,12 +126,12 @@
             </div>
             <div class="col">
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="customFile">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <input type="file" class="custom-file-input" id="customFile" name="in-file" multiple accept="image/*" onchange="setFileInputText()">
+                    <label class="custom-file-label" for="customFile" id="fileLabel">Choose Files (Max 5 Files)</label>
                 </div>
             </div>
             <div class="col-sm-2">
-                <button type="submit" class="btn btn-success col">Save</button>
+                <button type="submit" class="btn btn-success col" onclick="applyValidation()">Save</button>
             </div>
         </div>
     </form>
@@ -188,6 +186,4 @@
     </div>
     </form>
 </div>
-<script>
-</script>
-</body>
+<script src="../public/js/cold_kharid.js"></script>
