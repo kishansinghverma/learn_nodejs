@@ -6,7 +6,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Cold Storage</span>
                     </div>
-                    <select name="in-cold-name" id="cold-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
+                    <select name="in_cold_name" id="cold-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
                         <option disabled selected>Select Cold Storage Name</option>
                         {{#coldStore}}
                         <option value="{{name}}">{{name}}</option>
@@ -20,7 +20,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Date</span>
                     </div>
-                    <input type="date" class="form-control" name="in-date" required>
+                    <input type="date" class="form-control" name="in_date" required>
                 </div>
             </div>
         </div>
@@ -30,20 +30,21 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Party Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Seller Party Name & Address" list="seller-name" onfocusout="getSellerMobile()" id="seller-name-input" name="in-seller-name" required>
+                    <input type="text" class="form-control" placeholder="Seller Party Name & Address" list="seller-name" onfocusout="generateFieldData(this)" id="seller-name-input" name="in_seller_name" required>
                 </div>
                 <datalist id="seller-name">
-                    {{#seller}}
-                    <option value="{{name}}">
+                        {{#seller}}
+                        <option value="{{name}}" name="{{name}}" id='{"id":"{{_id}}","contact":[{{contact}}]}'>
                         {{/seller}}
                 </datalist>
+                <input type="text" name="in_seller_id" id="seller-id" style="display: none">
             </div>
             <div class="col-sm-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Mobile No.</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Seller Contact No." list="seller-mobile" name="in-seller-mobile" pattern="[0-9]{10}" title="Enter Ten Digit Mobile Number!">
+                    <input type="text" class="form-control" placeholder="Seller Contact No." list="seller-mobile" name="in_seller_mobile" pattern="[0-9]{10}" title="Enter Ten Digit Mobile Number!">
                 </div>
                 <datalist id="seller-mobile"></datalist>
             </div>
@@ -54,7 +55,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Merchant Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Buyer Party Name & Address" list="buyer-name" onfocusout="getBuyerMobile()" id="buyer-name-input" name="in-buyer-name" required>
+                    <input type="text" class="form-control" placeholder="Buyer Party Name & Address" list="buyer-name" onfocusout="getBuyerMobile()" id="buyer-name-input" name="in_buyer_name" required>
                 </div>
                 <datalist id="buyer-name">
                     <option value="Nem Singh">
@@ -66,7 +67,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Mobile No.</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Buyer Contact No." list="buyer-mobile" name="in-buyer-mobile" pattern="[0-9]{10}" title="Enter Ten Digit Mobile Number!">
+                    <input type="text" class="form-control" placeholder="Buyer Contact No." list="buyer-mobile" name="in_buyer_mobile" pattern="[0-9]{10}" title="Enter Ten Digit Mobile Number!">
                 </div>
                 <datalist id="buyer-mobile"></datalist>
             </div>
@@ -77,7 +78,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Lot No.</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Lot Number" name="in-lot" required>
+                    <input type="text" class="form-control" placeholder="Lot Number" name="in_lot" required>
                 </div>
             </div>
             <div class="col">
@@ -85,7 +86,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Type</span>
                     </div>
-                    <select class="form-control" name="in-type" id="type">
+                    <select class="form-control" name="in_type" id="type">
                         <option disabled selected>Select Potato Type</option>
                         <option value="Gulla">Gulla</option>
                         <option value="Mota">Mota</option>
@@ -98,7 +99,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Packets</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="No. Of Packets" name="in-bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
+                    <input type="text" class="form-control" placeholder="No. Of Packets" name="in_bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
                 </div>
             </div>
         </div>
@@ -108,7 +109,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Rate</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Rate" name="in-rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
+                    <input type="text" class="form-control" placeholder="Rate" name="in_rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
                 </div>
             </div>
             <div class="col-sm-3">
@@ -116,7 +117,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Tol</span>
                     </div>
-                    <select class="form-control" name="in-tol" id="tol">
+                    <select class="form-control" name="in_tol" id="tol">
                         <option disabled selected>Select Tol</option>
                         <option value="52.5">52.5 Kg/Packet</option>
                         <option value="52.3">52.3 Kg/Packet</option>
@@ -126,7 +127,7 @@
             </div>
             <div class="col">
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="customFile" name="in-files" multiple accept="image/*" onchange="setFileInputText()">
+                    <input type="file" class="custom-file-input" id="customFile" name="in_files" multiple accept="image/*" onchange="setFileInputText()">
                     <label class="custom-file-label" for="customFile" id="fileLabel">Choose Files (Max 5 Files)</label>
                 </div>
             </div>
@@ -186,4 +187,3 @@
     </div>
     </form>
 </div>
-<script src="../public/js/cold_kharid.js"></script>

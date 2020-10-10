@@ -14,7 +14,6 @@ function showColdStoreInsertModal(option){
     if(option.value==='add')
         $("#myModal").modal('show');
 }
-
 function saveColdStoreData(){
     document.getElementById('add-cold-btn').innerHTML=
         "<span class=\"spinner-border spinner-border-sm\"></span>&nbsp; Saving...";
@@ -49,14 +48,12 @@ function saveColdStoreData(){
     });
     return false;
 }
-
 function validateDropDown(input){
     if(input.selectedIndex==0 || input.selectedIndex==-1)
         input.setCustomValidity('Please Select A Valid Option!');
     else
         input.setCustomValidity('');
 }
-
 function applyValidation(){
     let coldList=document.getElementById("cold-name-list");
     let pType=document.getElementById("type");
@@ -72,7 +69,6 @@ function applyValidation(){
     else
         filePicker.setCustomValidity('');
 }
-
 function setFileInputText(){
     let label=document.getElementById("fileLabel");
     let fileInput=document.getElementById("customFile");
@@ -82,28 +78,22 @@ function setFileInputText(){
         label.innerHTML='Choose Files (Max 5 Files)';
     }
 }
+function generateFieldData(sellerName){
 
-function getSellerMobile(){
-    let dataList=document.getElementById('seller-mobile');
+    let mobileDataList=document.getElementById('seller-mobile');
+    let sellerID=document.getElementById('seller-id');
+    let nameDataList=document.getElementById('seller-name');
+    let option=nameDataList.options.namedItem(sellerName.value);
     let options="";
 
-    let sellerName=$('#seller-name-input').val();
-    $.ajax('/db/seller_mobile', {
-        type: 'POST',
-        data: {
-            name: sellerName
-        },
-        success: function (data, status, xhr) {
-            if(!jQuery.isEmptyObject(data))
-                for(let x of data.contact)
-                    options+="<option value="+x+">";
-
-            dataList.innerHTML=options;
-        },
-        error: function (jqXhr, textStatus, errorMessage) {
-            window.alert("Network Issue: Seller Contact Details!\n"+errorMessage);
-        }
-    });
+    if(option){
+        let data = JSON.parse(option.id);
+        sellerID.value=data.id;
+        for(let number of data.contact)
+            options+="<option value="+number+">";
+    }else
+        sellerID.value='';
+    mobileDataList.innerHTML=options;
 }
 function getBuyerMobile(){
     let dataList=document.getElementById('buyer-mobile');

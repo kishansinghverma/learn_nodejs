@@ -65,15 +65,13 @@ app.post('/db/seller_mobile', async (req, res)=>{
 });
 
 app.post('/handler/cold_kharid', async (req, res)=>{
-    let upload=util.upload.array('in-files', 5);
+    let upload=util.upload.array('in_files', 5);
 
     upload(req, res, async (err)=>{
-        console.log(JSON.stringify(req.body));
         if (err)
             res.redirect('/error?msg='+err);
         else {
-            let imgData=await util.saveImageData(req.files);
-            let result=saveColdStoreData(req.body, imgData);
+            let result=await util.saveColdKharid(req.body, req.files);
             res.json(result);
         }
     })

@@ -1,4 +1,5 @@
-const MongoClient=require('mongodb').MongoClient;
+const mongo=require('mongodb');
+const MongoClient=mongo.MongoClient;
 const url='mongodb://127.0.0.1:27017/Potato_Manager';
 const params={useUnifiedTopology: true};
 
@@ -71,6 +72,22 @@ const insertDocuments= async (collectionName, documents)=>{
     }
 
 };
+const updateDocument=async (collectionName, query, newVal)=>{
+    let client;
+    let res;
+    try {
+        client = await MongoClient.connect(url, params);
+        const db = client.db();
+        const collection = db.collection(collectionName);
+        res = await collection.updateOne(query, newVal);
+        client.close();
+        return res;
+
+    } catch (err) {
+        console.log(err.stack);
+        return undefined;
+    }
+};
 
 async function getColdStoreNames(){
     const data=await getList('cold_store', {}, {_id:0, name:1});
@@ -86,7 +103,7 @@ async function insertColdStoreName(name, bag, due){
     return {};
 }
 async function getSellerNames(){
-    const data=await getList('seller', {}, {_id:0, name:1});
+    const data=await getList('seller', {}, {});
     if(data!=undefined)
         return data;
     return {};
@@ -97,17 +114,27 @@ async function getSellerMobile(name){
         return data;
     return {};
 }
-async function saveImages(documents){
+async function saveImagesData(documents){
     const result=await insertDocuments('images', documents);
     if(result!=undefined)
         return result;
     return {};
 }
-async function saveColdKharid(data, image){
-    console.log(data, image);
-    const document={
-        //cold_name:data.
-    }
+async function saveSellerDetails(document){
+    const result=await insertDocument('seller', document);
+    if(result!=undefined)
+        return result;
+    return {};
+}
+async function updateSellerContact(sellerId, number){
+    let query={_id:new mongo.ObjectID(sellerId)};
+    let newVal={$addToSet: {contact:number}};
+    await updateDocument('seller', query, newVal);
+}
+async function saveColdKharidData(document){
+    const result=await insertDocument('cold_kharid', document);
+    if(result!=undefined)
+        return result;
     return {};
 }
 
@@ -116,6 +143,8 @@ module.exports={
     insertColdStoreName,
     getSellerNames,
     getSellerMobile,
-    saveImages,
-    saveColdKharid
+    saveImagesData,
+    saveColdKharidData,
+    saveSellerDetails,
+    updateSellerContact
 };
