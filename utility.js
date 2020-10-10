@@ -48,6 +48,8 @@ let saveImageData= async (files)=> {
     }
     if(imageBinaries.length>0)
         return await database.saveImages(imageBinaries);
+    else
+        return {};
 }
 
 module.exports={

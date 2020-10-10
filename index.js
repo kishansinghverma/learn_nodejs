@@ -4,7 +4,6 @@ const mustacheExpress=require('mustache-express');
 const database=require('./databaseManager');
 const util=require('./utility');
 const bodyParser=require('body-parser');
-const fs=require('fs');
 
 const app=express();
 app.engine('html', mustacheExpress());
@@ -15,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/error', (req, res)=>{
-    if(req.query.msg==undefined)
+    if(req.query.msg===undefined || req.query.msg==='')
         req.query.msg="Unknown Error!";
     res.render('error_page.html', {error:req.query.msg});
 });
@@ -66,16 +65,6 @@ app.post('/db/seller_mobile', async (req, res)=>{
 });
 
 app.post('/handler/cold_kharid', async (req, res)=>{
-    console.log(JSON.stringify(req.body))
-    res.end();
-});
-
-app.get('/form', (req, res)=>{
-
-    res.render('test.html', null);
-});3
-
-app.post('/test', async (req, res, next)=>{
     let upload=util.upload.array('in-files', 5);
 
     upload(req, res, async (err)=>{
@@ -83,12 +72,19 @@ app.post('/test', async (req, res, next)=>{
         if (err)
             res.redirect('/error?msg='+err);
         else {
-            let result=await util.saveImageData(req.files);
+            let imgData=await util.saveImageData(req.files);
+            let result=saveColdStoreData(req.body, imgData);
             res.json(result);
         }
     })
+});
 
+app.get('/form', (req, res)=>{
+    res.render('test.html', null);
+});
 
+app.post('/test', async (req, res, next)=>{
+    res.end();
 });
 
 app.listen(8000);

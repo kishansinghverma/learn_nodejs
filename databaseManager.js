@@ -103,11 +103,19 @@ async function saveImages(documents){
         return result;
     return {};
 }
+async function saveColdKharid(data, image){
+    console.log(data, image);
+    const document={
+        //cold_name:data.
+    }
+    return {};
+}
 
 module.exports={
     getColdStoreNames,
     insertColdStoreName,
     getSellerNames,
     getSellerMobile,
-    saveImages
+    saveImages,
+    saveColdKharid
 };
