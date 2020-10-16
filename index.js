@@ -20,7 +20,7 @@ app.get('/error', (req, res)=>{
 });
 
 app.get('/', (req, res)=>{
-    res.render('index.html',null);
+    res.render('index.html', {page:'dashboard', data:''});
 });
 
 app.get('/dashboard', (req, res)=>{
@@ -30,7 +30,7 @@ app.get('/dashboard', (req, res)=>{
 app.get('/cold_kharid',async (req, res)=>{
     const data = {
         coldStore: await database.getColdStoreNames(),
-        seller:await database.getSellerNames()
+        seller:await database.getSellerDetails()
     };
     res.render('cold_kharid.html', data);
 })
@@ -54,16 +54,6 @@ app.post('/db/new_cold', async (req, res)=>{
         res.redirect('/error');
 });
 
-app.post('/db/seller_mobile', async (req, res)=>{
-    let name=req.body.name;
-    if(util.verifyInputs([name])) {
-        let result = await database.getSellerMobile(req.body.name);
-        res.json(result);
-    }else {
-        res.redirect('/error');
-    }
-});
-
 app.post('/handler/cold_kharid', async (req, res)=>{
     let upload=util.upload.array('in_files', 5);
 
@@ -71,8 +61,10 @@ app.post('/handler/cold_kharid', async (req, res)=>{
         if (err)
             res.redirect('/error?msg='+err);
         else {
+            console.log(req.body);
             let result=await util.saveColdKharid(req.body, req.files);
-            res.json(result);
+            if(result.insertedId != null)
+                res.render('index.html', {page:'cold_kharid', data:result.insertedId});
         }
     })
 });
@@ -81,8 +73,12 @@ app.get('/form', (req, res)=>{
     res.render('test.html', null);
 });
 
-app.post('/test', async (req, res, next)=>{
-    res.end();
+app.get('/test', async (req, res, next)=>{
+    res.render('index.html', {page:'cold_kharid', data:{}});
+});
+
+app.get('*', (req, res)=>{
+    res.render(req.query);
 });
 
 app.listen(8000);

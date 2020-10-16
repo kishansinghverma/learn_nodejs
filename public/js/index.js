@@ -1,34 +1,29 @@
-let dashboard=document.getElementById('dashboard');
-let entryForm=document.getElementById('entry-form');
-let routine=document.getElementById('routine');
-let management=document.getElementById('management');
-let report=document.getElementById('report');
+$(document).ready(function(){
+    let innerPageData;
+    try {
+        innerPageData = JSON.parse($('#inner-page')[0].innerHTML);
+        functions[innerPageData.page]();
+    }catch (e){console.log(e)}
+});
+let header={
+    dashboard:'dashboard',
+    cold_kharid:'cold kharid form',
+    kisan_kharid:'kisan kharid form',
+    self_entry:'self entry form',
+    display_cold_kharid:'view cold kharid',
+    display_kisan_kharid:'view kisan kharid',
+    display_self_entry:'view self entry'
+}
+let functions={
+    dashboard: ()=>{loadDashboard();},
+    cold_kharid: ()=>{
+        let tabData=getTabData('cold_kharid');
+        loadChild(tabData.element);
+        doGet(tabData.innerLink);
+    },
+}
+
 let script=undefined;
-
-function activateTab(tab){
-    var tabs=[dashboard, entryForm, routine, management, report];
-    for (var x of tabs){
-        if(x===tab)
-            x.className='active';
-        else
-            x.className=null;
-    }
-}
-function toggleLinksDisplay(tab, className){
-    if(tab.getAttribute('status')==='collapsed'){
-        for(var x of document.getElementsByClassName(className))
-            x.style.display='block';
-        tab.setAttribute('status', 'expanded');
-        tab.innerHTML=tab.innerHTML.replace('down', 'up');
-    }
-    else {
-        for(var x of document.getElementsByClassName(className))
-            x.style.display='none';
-        tab.setAttribute('status', 'collapsed');
-        tab.innerHTML=tab.innerHTML.replace('up', 'down');
-    }
-}
-
 function setScript(url){
     if(url==undefined) {
         script=undefined;
@@ -50,36 +45,64 @@ function unloadScript(script){
         document.getElementsByTagName("body")[0].removeChild(script);
 }
 
-function loadContent(innerLink, JSLink, headerText){
+function getTabData(tabName){
+    return {
+        header:header[tabName],
+        innerLink: '/'+tabName,
+        JSLink: '/js/'+tabName+'.js',
+        element: $('[href="#'+tabName+'"]')[0]
+    }
+}
+function loadHelpers(tab){
     unloadScript(getScript());
-    setScript(JSLink);
+    setScript(tab.JSLink);
+    $('#header').html(tab.header.toUpperCase());
+}
 
-    document.getElementById('header').innerHTML=headerText;
+function doGet(link){
     $.ajax({
-        url: innerLink,
+        url: link,
         success: function( result ) {
-            document.getElementById('target').innerHTML=result;
+            $('#target').html(result);
             loadScript(getScript());
         }
     });
 }
-function loadTab(tab){
-    if(tab===dashboard){
-        loadContent("/dashboard", undefined, 'DASHBOARD');
-    }
-    else if(tab===entryForm){
-        toggleLinksDisplay(tab, 'sub-form-nav');
-        return;
-    }
-    activateTab(tab);
+function doPost(tab, data){
+
 }
-function loadForm(form){
-    let formName=form.replace("_", " ").toUpperCase();
-    loadContent('/'+form, './js/'+form+'.js', 'ENTRY FORM / '+formName);
-    toggleLinksDisplay(entryForm, 'sub-form-nav');
-    activateTab(entryForm);
+function toggleLinksDisplay(tab){
+    let id=tab.href.split("#")[1];
+    $('.collapse').collapse('hide');
+    $('#'+id).collapse('show');
+}
+function activateChild(child){
+    $('.sub-nav').removeClass('active');
+    $(child).addClass('active');
+}
+function activateTab(){
+    $('[aria-expanded=false]').removeClass('active');
+    $('[aria-expanded=true]').addClass('active');
 }
 
-function initLoad(){
-    loadTab(dashboard);
+function loadChild(child){
+    activateChild(child);
+    activateTab();
+    let childName=child.href.split('#')[1];
+    let tabData=getTabData(childName);
+    loadHelpers(tabData);
+    doGet(tabData.innerLink);
+}
+function loadDashboard(){
+    $('[aria-expanded]').removeClass('active');
+    $('.sub-nav').removeClass('active');
+    $('.collapse').collapse('hide');
+    $('#dashboard').addClass('active');
+    let tabData=getTabData('dashboard');
+    loadHelpers(tabData);
+    doGet(tabData.innerLink);
+}
+
+if ( window.history.replaceState ) {
+    window.history.replaceState( null, null, window.location.href );
 }

@@ -1,15 +1,43 @@
+var messages={
+    error:"<i style='color: #db3000' class=\"fa fa-times-circle-o fa-lg\" aria-hidden=\"true\"></i> Can't Save The Entry! ",
+    success:"<i style='color: #4cae4c' class=\"fa fa-check-circle-o fa-lg\" aria-hidden=\"true\"></i> Entry Saved Successfully! "
+}
+var thisPage='cold_kharid';
+
 $(document).ready(function() {
+    setModalProperties();
+    followPreSetInstruction();
+});
+function followPreSetInstruction(){
+    let preSetData
+    try{
+        preSetData=JSON.parse($('#inner-page')[0].innerHTML);
+        $('#inner-page')[0].innerHTML='';
+
+        if(preSetData.page===thisPage) {
+            if (jQuery.isEmptyObject(preSetData.data)) {
+                $('#info-model-message').html(messages.error);
+                $('#info-modal-action-button')[0].style.display = 'none';
+            } else {
+                $('#info-modal-action-button').html('View Entry');
+                $('#info-model-message').html(messages.success);
+                $('#info-modal-action-button')[0].style.display = 'inline';
+            }
+            $('#info-modal-header').html('Saving Data...');
+            $('#alertModal').modal('show');
+        }
+    }catch (e){console.error('PreSet Data Not Available! '+e);}
+}
+function setModalProperties(){
     $("#myModal").on('show.bs.modal', function () {
         document.getElementById("new-cold-form").reset();
         document.getElementById("add-cold-btn").innerHTML="Save";
         document.getElementById("new-cold-error").innerHTML="";
     });
-
     $("#myModal").on('hidden.bs.modal', function () {
         document.getElementById("cold-name-list").selectedIndex=0;
     });
-});
-
+}
 function showColdStoreInsertModal(option){
     if(option.value==='add')
         $("#myModal").modal('show');

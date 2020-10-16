@@ -17,6 +17,10 @@
         input:focus{
             outline: none;
         }
+        .m-font{
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
         .m-nav a{
             padding: 20px 50px;
             text-decoration: none;
@@ -26,9 +30,9 @@
             color: #5e5e5e;
             text-align: left;
         }
-        .m-nav a.active {
+        .m-nav a.active{
             font-weight: bold;
-            border-left: #1eb69f 4px solid;
+            border-left: #4cae4c 5px solid;
             padding: 20px 45px;
             text-decoration: none;
         }
@@ -37,37 +41,53 @@
             transition: 0.3s;
             text-decoration: none;
         }
-        .m-font{
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
-        a.sub-form-nav {
+        a.sub-nav {
             font-size: 14px;
             padding-left: 60px;
-            display: none;
+            padding-right: 0px;
+            display: block;
+        }
+        a.sub-nav.active{
+            border-right: #1eb69f 4px solid;
+            border-left: none;
+            padding-left: 60px;
+            padding-right: 0px;
         }
     </style>
 </head>
-<body onload="initLoad()">
+<body>
+<div id="inner-page" style="display: none">{"page":"{{page}}", "data":"{{data}}"}</div>
 <div class="container-fluid">
     <div class="m-nav ml-n3" style="width: 265px; position: fixed; height: 100vh; background-color: #ffffff; box-shadow: 0px 5px 5px #888888;">
         <div class="d-flex flex-column">
             <div class="m-font" style="padding: 20px 30px; font-weight: bold; font-size: 18px" >
                 <i class="fa fa-leaf fa-lg"></i>&nbsp; Potato Manager</div>
 
-            <a href="#" onclick="loadTab(this)" class="active" id="dashboard">
+            <a href="#" onclick="loadDashboard()" id="dashboard" aria-expanded="false">
                 <i class="fa fa-dashboard fa-lg"></i>&nbsp; Dashboard</a>
-            <a href="#" onclick="loadTab(this)" id="entry-form" status="collapsed">
+
+            <a href="#forms" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
                 <i class="fa fa-table fa-lg"></i>&nbsp; Entry Form &nbsp;<i class="fa fa-angle-down fa-lg"></i></a>
 
-            <a class="sub-form-nav" href="#" onclick="loadForm('cold_kharid')"><i class="fa fa-pencil fa-mg"></i> Cold Kharid Form</a>
-            <a class="sub-form-nav" href="#" onclick="loadForm('kisan_kharid')"><i class="fa fa-pencil fa-mg"></i> Kisan Kharid Form</a>
-            <a class="sub-form-nav" href="#" onclick="loadForm('self_entry')"><i class="fa fa-pencil fa-mg"></i> Manual Entry Form</a>
+            <div id="forms" class="collapse">
+                <a class="sub-nav" href="#cold_kharid" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Cold Kharid Form</a>
+                <a class="sub-nav" href="#kisan_kharid" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Kisan Kharid Form</a>
+                <a class="sub-nav" href="#self_entry" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Manual Entry Form</a>
+            </div>
 
-            <a href="#" onclick="loadTab(this)" id="routine">
-                <i class="fa fa-pencil-square-o fa-lg"></i>&nbsp; Routines</a>
-            <a href="#" onclick="loadTab(this)" id="management">
+            <a href="#routines" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
+                <i class="fa fa-pencil-square-o fa-lg"></i>&nbsp; Routines <i class="fa fa-angle-down fa-lg"></i></a>
+
+            <div id="routines" class="collapse">
+                <a class="sub-nav" href="#display_cold_kharid" onclick="loadChild(this)"><i class="fa fa-pencil fa-mg"></i>&nbsp; View Cold Kharid</a>
+                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; View Kisan Kharid</a>
+                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; View Self Entry</a>
+            </div>
+
+            <a href="#" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
                 <i class="fa fa-cogs fa-lg"></i>&nbsp; Management</a>
-            <a href="#" onclick="loadTab(this)" id="report">
+
+            <a href="#" onclick="toggleLinksDisplay(this)" id="report" data-toggle="collapse" aria-expanded="false">
                 <i class="fa fa-print fa-lg"></i>&nbsp; Reports</a>
         </div>
     </div>
@@ -78,15 +98,29 @@
                 <i class="fa fa-search" style="margin-left: -40px; margin-right: 50px; color: #2f323e;"></i>
             </div>
             <div style="box-shadow: 1px 1px 1px #ccc; padding: 10px; background-color: #ffffff; text-align: right;">
-                <div id="header" style="margin: 8px; margin-right: 25px; font-weight: bolder; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; letter-spacing: 2px">DASHBOARD</div>
+                <div id="header" style="margin: 8px; margin-right: 25px; font-weight: bolder; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; letter-spacing: 2px"></div>
             </div>
             <div id="target" style="margin-left: 35px; margin-top: 45px; margin-right: 30px;"></div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="alertModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="info-modal-header"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="info-model-message"></p>
+            </div>
+            <div class="modal-footer" id="info-modal-footer">
+                <button type="button" id="info-modal-action-button" class="btn btn-success" data-dismiss="modal"></button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-
-<script src="../public/js/cold_kharid.js"></script>
-<script src="../public/js/index.js"></script>
-<script src="./js/index.js"></script>
+<script src="/js/index.js"></script>
 </html>

@@ -102,14 +102,8 @@ async function insertColdStoreName(name, bag, due){
         return res;
     return {};
 }
-async function getSellerNames(){
+async function getSellerDetails(){
     const data=await getList('seller', {}, {});
-    if(data!=undefined)
-        return data;
-    return {};
-}
-async function getSellerMobile(name){
-    const data=await getDocument('seller', {name:name}, {_id:0, contact:1});
     if(data!=undefined)
         return data;
     return {};
@@ -141,8 +135,7 @@ async function saveColdKharidData(document){
 module.exports={
     getColdStoreNames,
     insertColdStoreName,
-    getSellerNames,
-    getSellerMobile,
+    getSellerDetails,
     saveImagesData,
     saveColdKharidData,
     saveSellerDetails,
