@@ -78,7 +78,7 @@ app.get('/test', async (req, res, next)=>{
 });
 
 app.get('*', (req, res)=>{
-    res.render(req.query);
+    res.redirect('/error?msg=Invalid Request Type! (GET)')
 });
 
 app.listen(8000);
