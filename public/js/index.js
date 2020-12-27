@@ -6,7 +6,7 @@ $(document).ready(function(){
     }catch (e){console.log(e)}
 });
 let header={
-    dashboard:'dashboard',
+    /*dashboard:'dashboard',*/
     cold_kharid:'cold kharid form',
     kisan_kharid:'kisan kharid form',
     self_entry:'self entry form',
@@ -21,28 +21,10 @@ let functions={
         loadChild(tabData.element);
         doGet(tabData.innerLink);
     },
-}
+    display_cold_kharid: ()=>{
+        let tabData=getTabData('display_cold_kharid')
 
-let script=undefined;
-function setScript(url){
-    if(url==undefined) {
-        script=undefined;
-    }else {
-        script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = url;
     }
-}
-function getScript(){
-    return script;
-}
-function loadScript(script){
-    if(script!=undefined)
-        document.getElementsByTagName("body")[0].appendChild(script);
-}
-function unloadScript(script){
-    if(script!=undefined)
-        document.getElementsByTagName("body")[0].removeChild(script);
 }
 
 function getTabData(tabName){
@@ -53,18 +35,13 @@ function getTabData(tabName){
         element: $('[href="#'+tabName+'"]')[0]
     }
 }
-function loadHelpers(tab){
-    unloadScript(getScript());
-    setScript(tab.JSLink);
-    $('#header').html(tab.header.toUpperCase());
-}
 
 function doGet(link){
     $.ajax({
         url: link,
         success: function( result ) {
             $('#target').html(result);
-            loadScript(getScript());
+            loadScript();
         }
     });
 }
@@ -93,13 +70,8 @@ function loadChild(child){
     loadHelpers(tabData);
     doGet(tabData.innerLink);
 }
-function loadDashboard(){
-    $('[aria-expanded]').removeClass('active');
-    $('.sub-nav').removeClass('active');
-    $('.collapse').collapse('hide');
-    $('#dashboard').addClass('active');
-    let tabData=getTabData('dashboard');
-    loadHelpers(tabData);
+function loadPage(page){
+
     doGet(tabData.innerLink);
 }
 

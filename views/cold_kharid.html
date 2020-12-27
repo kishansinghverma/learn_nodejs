@@ -1,3 +1,13 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica Neue">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
 <div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
     <form action="/handler/cold_kharid" method="post" enctype="multipart/form-data">
         <div class="form-row mb-4">
@@ -28,9 +38,9 @@
             <div class="col">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Party Name</span>
+                        <span class="input-group-text">Seller Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Seller Party Name & Address" list="seller-name" onfocusout="generateFieldData(this)" id="seller-name-input" name="in_seller_name" required>
+                    <input type="text" class="form-control" placeholder="Seller Name & Address" list="seller-name" onfocusout="generateFieldData(this)" id="seller-name-input" name="in_seller_name" required>
                 </div>
                 <datalist id="seller-name">
                         {{#seller}}
@@ -53,9 +63,9 @@
             <div class="col">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Merchant Name</span>
+                        <span class="input-group-text">Buyer Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Buyer Party Name & Address" list="buyer-name" onfocusout="getBuyerMobile()" id="buyer-name-input" name="in_buyer_name" required>
+                    <input type="text" class="form-control" placeholder="Buyer Name & Address" list="buyer-name" onfocusout="getBuyerMobile()" id="buyer-name-input" name="in_buyer_name" required>
                 </div>
                 <datalist id="buyer-name">
                     <option value="Nem Singh">
@@ -72,66 +82,72 @@
                 <datalist id="buyer-mobile"></datalist>
             </div>
         </div>
-        <div class="form-row mb-4">
-            <div class="col">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Lot No.</span>
+        <hr>
+        <div id="purchase_detail">
+            <div class="form-row mb-4">
+                <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Lot No.</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Lot Number" name="in_lot" required>
                     </div>
-                    <input type="text" class="form-control" placeholder="Lot Number" name="in_lot" required>
                 </div>
-            </div>
-            <div class="col">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Type</span>
+                <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Type</span>
+                        </div>
+                        <select class="form-control" name="in_type" name="in-size">
+                            <option disabled selected>Potato Size</option>
+                            <option value="Gulla">Gulla</option>
+                            <option value="Mota">Mota</option>
+                            <option value="Kirri">Kirri</option>
+                        </select>
                     </div>
-                    <select class="form-control" name="in_type" id="type">
-                        <option disabled selected>Select Potato Type</option>
-                        <option value="Gulla">Gulla</option>
-                        <option value="Mota">Mota</option>
-                        <option value="Kirri">Kirri</option>
-                    </select>
                 </div>
-            </div>
-            <div class="col">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Packets</span>
+                <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Packets</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Bags" name="in_bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
                     </div>
-                    <input type="text" class="form-control" placeholder="No. Of Packets" name="in_bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Rate</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Rate" name="in_rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Tol</span>
+                        </div>
+                        <select class="form-control" name="in_tol">
+                            <option disabled selected>Select Tol</option>
+                            <option value="52.5">52.5 Kg/Bag</option>
+                            <option value="52.3">52.3 Kg/Bag</option>
+                            <option value="52.7">52.7 Kg/Bag</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-offset-10">
+                    <button class="btn btn-primary" style="width: 2.5em" onclick="addRow()">+</button>
                 </div>
             </div>
         </div>
         <div class="form-row">
-            <div class="col-sm-3">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Rate</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Rate" name="in_rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Tol</span>
-                    </div>
-                    <select class="form-control" name="in_tol" id="tol">
-                        <option disabled selected>Select Tol</option>
-                        <option value="52.5">52.5 Kg/Packet</option>
-                        <option value="52.3">52.3 Kg/Packet</option>
-                        <option value="52.7">52.7 Kg/Packet</option>
-                    </select>
-                </div>
-            </div>
             <div class="col">
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="customFile" name="in_files" multiple accept="image/*" onchange="setFileInputText()">
                     <label class="custom-file-label" for="customFile" id="fileLabel">Choose Files (Max 5 Files)</label>
                 </div>
             </div>
-            <div class="col-sm-2",ngr>
+            <div class="col-sm-2">
                 <button type="submit" class="btn btn-success col" onclick="applyValidation()">Save</button>
             </div>
         </div>
@@ -187,3 +203,214 @@
     </div>
     </form>
 </div>
+<div id="purchase_template" class="d-none">
+    <div class="form-row mb-4">
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Lot No.</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Lot Number" name="in_lot" required>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Type</span>
+                </div>
+                <select class="form-control" name="in_type" name="in-size">
+                    <option disabled selected>Potato Size</option>
+                    <option value="Gulla">Gulla</option>
+                    <option value="Mota">Mota</option>
+                    <option value="Kirri">Kirri</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Packets</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Bags" name="in_bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Rate</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Rate" name="in_rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Tol</span>
+                </div>
+                <select class="form-control" name="in_tol">
+                    <option disabled selected>Select Tol</option>
+                    <option value="52.5">52.5 Kg/Bag</option>
+                    <option value="52.3">52.3 Kg/Bag</option>
+                    <option value="52.7">52.7 Kg/Bag</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-push-0">
+            <button class="btn btn-primary" style="width: 2.5em" onclick="removeRow(this)">-</button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    let table = document.getElementById("purchase_detail");
+    let messages={
+        error:"<i style='color: #db3000' class=\"fa fa-times-circle-o fa-lg\" aria-hidden=\"true\"></i> Can't Save The Entry! ",
+        success:"<i style='color: #4cae4c' class=\"fa fa-check-circle-o fa-lg\" aria-hidden=\"true\"></i> Entry Saved Successfully! "
+    }
+    let thisPage='cold_kharid';
+
+    $(document).ready(function() {
+        setModalProperties();
+        followPreSetInstruction();
+    });
+
+    function addRow() {
+        let template = document.createElement('template');
+        template.innerHTML = document.getElementById("purchase_template").innerHTML;
+        let node = template.content.cloneNode(true);
+        table.appendChild(node);
+    }
+    function removeRow(child){
+        table.removeChild(child.parentElement.parentElement);
+    }
+    function validateDropDown(input){
+        if(input.selectedIndex==0 || input.selectedIndex==-1)
+            input.setCustomValidity('Please Select A Valid Option!');
+        else
+            input.setCustomValidity('');
+    }
+    function applyValidation(){
+        let coldList=document.getElementById("cold-name-list");
+        let pType=document.getElementById("type");
+        let tol=document.getElementById("tol");
+        let filePicker=document.getElementById("customFile");
+
+        validateDropDown(coldList);
+        validateDropDown(pType);
+        validateDropDown(tol);
+
+        if(filePicker.files.length>5)
+            filePicker.setCustomValidity('Maximum 5 Files Allowed!');
+        else
+            filePicker.setCustomValidity('');
+    }
+    function setFileInputText(){
+        let label=document.getElementById("fileLabel");
+        let fileInput=document.getElementById("customFile");
+        if(fileInput.files.length>0){
+            label.innerHTML=fileInput.files.length+' Files Selected';
+        }else {
+            label.innerHTML='Choose Files (Max 5 Files)';
+        }
+    }
+    function getBuyerMobile(){
+        let dataList=document.getElementById('buyer-mobile');
+        let options="";
+        if($('#buyer-name-input').val()==='Nem Singh'){
+            options+="<option value='9719814140'>";
+        }
+        else if($('#buyer-name-input').val()==='Mahesh Chand'){
+            options+="<option value='9675234150'><option value='9675444150'>";
+        }
+        dataList.innerHTML=options;
+    }
+    function generateFieldData(sellerName){
+
+        let mobileDataList=document.getElementById('seller-mobile');
+        let sellerID=document.getElementById('seller-id');
+        let nameDataList=document.getElementById('seller-name');
+        let option=nameDataList.options.namedItem(sellerName.value);
+        let options="";
+
+        if(option){
+            let data = JSON.parse(option.id);
+            sellerID.value=data.id;
+            for(let number of data.contact)
+                options+="<option value="+number+">";
+        }else
+            sellerID.value='';
+        mobileDataList.innerHTML=options;
+    }
+    function setModalProperties(){
+        $("#myModal").on('show.bs.modal', function () {
+            document.getElementById("new-cold-form").reset();
+            document.getElementById("add-cold-btn").innerHTML="Save";
+            document.getElementById("new-cold-error").innerHTML="";
+        });
+        $("#myModal").on('hidden.bs.modal', function () {
+            document.getElementById("cold-name-list").selectedIndex=0;
+        });
+    }
+    function showColdStoreInsertModal(option){
+        if(option.value==='add')
+            $("#myModal").modal('show');
+    }
+    function followPreSetInstruction(){
+        let preSetData
+        try{
+            preSetData=JSON.parse($('#inner-page')[0].innerHTML);
+            $('#inner-page')[0].innerHTML='';
+
+            if(preSetData.page===thisPage) {
+                if (jQuery.isEmptyObject(preSetData.data)) {
+                    $('#info-model-message').html(messages.error);
+                    $('#info-modal-action-button')[0].style.display = 'none';
+                } else {
+                    $('#info-modal-action-button').html('View Entry');
+                    $('#info-model-message').html(messages.success);
+                    $('#info-modal-action-button')[0].style.display = 'inline';
+                }
+                $('#info-modal-header').html('Saving Data...');
+                $('#alertModal').modal('show');
+            }
+        }catch (e){console.error('PreSet Data Not Available! '+e);}
+    }
+</script>
+
+<script>
+    function saveColdStoreData(){
+        document.getElementById('add-cold-btn').innerHTML=
+            "<span class=\"spinner-border spinner-border-sm\"></span>&nbsp; Saving...";
+
+        $.ajax('/db/new_cold', {
+            type: 'POST',
+            data: {
+                name: $('#cold-name').val(),
+                bag: $('#bag').val(),
+                due: $('#due').val()
+            },
+            success: function (data, status, xhr) {
+                if(jQuery.isEmptyObject(data)){
+                    document.getElementById("add-cold-btn").innerHTML="Save";
+                    document.getElementById("new-cold-error").innerHTML="Error! New Cold Details Not Saved."
+                }
+                else {
+                    let nameList=document.getElementById('cold-name-list');
+                    let options="<option disabled selected>Select Cold Storage Name</option>";
+                    for(let x of data){
+                        options+="<option value="+x.name+">"+x.name+"</option>";
+                    }
+                    options+="<option value=\"add\">Add New Cold Store</option>";
+                    nameList.innerHTML=options;
+                    $("#myModal").modal('hide');
+                }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                window.alert("Network Issue: Save New Cold Details!\n"+errorMessage);
+                location.reload();
+            }
+        });
+        return false;
+    }
+</script>
+</html>
