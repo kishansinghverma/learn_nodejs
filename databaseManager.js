@@ -17,7 +17,7 @@ const getList=async (collectionName, query, projection)=> {
 
     } catch (err) {
         console.log(err.stack);
-        return undefined;
+        return null;
     }
 };
 const getDocument=async (collectionName, query, projection)=> {
@@ -34,7 +34,7 @@ const getDocument=async (collectionName, query, projection)=> {
 
     } catch (err) {
         console.log(err.stack);
-        return undefined;
+        return null;
     }
 };
 const insertDocument= async (collectionName, document)=>{
@@ -51,7 +51,7 @@ const insertDocument= async (collectionName, document)=>{
 
     } catch (err) {
         console.log(err.stack);
-        return undefined;
+        return null;
     }
 };
 const insertDocuments= async (collectionName, documents)=>{
@@ -68,7 +68,7 @@ const insertDocuments= async (collectionName, documents)=>{
 
     } catch (err) {
         console.log(err.stack);
-        return undefined;
+        return null;
     }
 
 };
@@ -85,38 +85,48 @@ const updateDocument=async (collectionName, query, newVal)=>{
 
     } catch (err) {
         console.log(err.stack);
-        return undefined;
+        return null;
     }
 };
 
 async function getColdStoreNames(){
     const data=await getList('cold_store', {}, {_id:0, name:1});
-    if(data!=undefined)
+    if(data!==null)
         return data;
     return {};
 }
 async function insertColdStoreName(name, bag, due){
     const document={name:name, bag:bag, due:due};
     const res=await insertDocument('cold_store', document);
-    if(res != undefined)
+    if(res !== null)
         return res;
     return {};
 }
 async function getSellerDetails(){
     const data=await getList('seller', {}, {});
-    if(data!=undefined)
+    if(data!==null)
         return data;
     return {};
 }
 async function saveImagesData(documents){
-    const result=await insertDocuments('images', documents);
-    if(result!=undefined)
+    let result=await insertDocuments('images', documents);
+    if(result!==null)
         return result;
+    return {};
+}
+async function getImageData(imageId){
+    let _id;
+    try{_id=new mongo.ObjectId(imageId);}
+    catch (e){return {};}
+
+    let data=await getDocument('images', {'_id':_id}, {})
+    if(data!==null)
+        return data;
     return {};
 }
 async function saveSellerDetails(document){
     const result=await insertDocument('seller', document);
-    if(result!=undefined)
+    if(result!==null)
         return result;
     return {};
 }
@@ -127,7 +137,7 @@ async function updateSellerContact(sellerId, number){
 }
 async function saveColdKharidData(document){
     const result=await insertDocument('cold_kharid', document);
-    if(result!=undefined)
+    if(result!==null)
         return result;
     return {};
 }
@@ -139,5 +149,6 @@ module.exports={
     saveImagesData,
     saveColdKharidData,
     saveSellerDetails,
-    updateSellerContact
+    updateSellerContact,
+    getImageData
 };

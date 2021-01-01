@@ -52,14 +52,16 @@ let saveImages= async (files)=> {
     else
         return {};
 }
-let saveColdKharid=async (formData, imageData)=>{
+
+
+let saveColdKharid=async (formData)=>{
     //Saving images and returning their IDs
-    let imageIDs;
+    /*let imageIDs;
     let imgData=await saveImages(imageData);
     if(len(imgData)>0)
         imageIDs=imgData.insertedIds;
     else
-        imageIDs={};
+        imageIDs={};*/
 
     //Checking & saving seller details
     let seller_id=formData.in_seller_id;
@@ -89,7 +91,7 @@ let saveColdKharid=async (formData, imageData)=>{
         bag:formData.in_bag,
         rate:formData.in_rate,
         tol:formData.in_tol,
-        images:imageIDs
+        //images:imageIDs
     }
 
     let result=await database.saveColdKharidData(document);
