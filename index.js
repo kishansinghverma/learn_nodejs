@@ -15,16 +15,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res)=>{
     res.render('index.html', {page:'dashboard', data:''});
-    res.end();
 });
 
 app.get('/dashboard', (req, res)=>{
     res.render('dashboard.html', null);
-    res.end();
 });
 app.get('/cold_kharid',async (req, res)=>{
     res.render('cold_kharid.html');
-    res.end();
 })
 app.get('/kisan_kharid', (req, res)=>{
     res.end('Working');
@@ -37,35 +34,37 @@ app.get('/self_entry', (req, res)=>{
 app.post('/api/save_new_cold', async (req, res)=>{
     if(util.verifyInputs([req.body.name, req.body.bag, req.body.due])) {
         let result = await controller.saveColdStoreDetails(req.body.name, req.body.bag, req.body.due);
-        res.json(result);
+        if (util.isEmpty(result))
+            res.status(500).end()
+        else
+            res.json(result);
     }
     else
-        res.status(400);
-    res.end();
+        res.status(400).end();
 });
 
 app.post('/api/cold_kharid', async (req, res)=>{
     let result=await util.saveColdKharid(req.body);
     res.json(result);
-    res.end();
 });
 
 app.post('/api/image', (req, res)=> {
     let upload = controller.upload.array('in_files', 5);
     upload(req, res, async (err) => {
         if (err) {
-            res.status(403);
+            res.status(403).end();
         }
         else {
             if(req.files !== undefined) {
                 let result = await controller.saveImages(req.files);
-                res.json(result);
+                if (util.isEmpty(result))
+                    res.status(500).end();
+                else
+                    res.json(result);
             }
-            else {
-                res.status(400);
-            }
+            else
+                res.status(400).end();
         }
-        res.end();
     })
 });
 app.get('/api/image', async (req, res)=>{
@@ -76,10 +75,10 @@ app.get('/api/image', async (req, res)=>{
             res.send(result.image.buffer);
         }
         else
-            res.status(404);
-    }else
-        res.status(400);
-    res.end();
+            res.status(404).end();
+    }
+    else
+        res.status(400).end();
 });
 
 app.get('/error', (req, res)=>{

@@ -13,7 +13,7 @@ async function saveColdStoreDetails(name, bag, due){
     const document={name:name, bag:bag, due:due};
     const res=await database.insertDocument('cold_store', document);
     if(res !== null && res.insertedCount > 0)
-        return {"inserted_cold" : name};
+        return {"insertedId" : res.insertedId, "name" : name};
     return {};
 }
 async function getSellerDetails(){

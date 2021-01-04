@@ -11,9 +11,17 @@ function verifyInputs(inputs){
     return true;
 }
 
-let len=(object)=>{
+function len(object){
     return Object.keys(object).length;
 }
+
+function isEmpty(data){
+    if(len(data)==0)
+        return true
+    return false;
+}
+
+
 
 
 let saveColdKharid=async (formData)=>{
@@ -63,5 +71,6 @@ let saveColdKharid=async (formData)=>{
 module.exports={
     verifyInputs,
     len,
+    isEmpty,
     saveColdKharid
 }
