@@ -1,7 +1,7 @@
 const express=require('express')
 const path=require('path');
 const mustacheExpress=require('mustache-express');
-const database=require('./databaseManager');
+const controller=require('./controller');
 const util=require('./utility');
 const bodyParser=require('body-parser');
 
@@ -13,30 +13,19 @@ app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get('/error', (req, res)=>{
-    if(req.query.msg===undefined || req.query.msg==='')
-        req.query.msg="Unknown Error!";
-    res.render('error_page.html', {error:req.query.msg});
-});
-
 app.get('/', (req, res)=>{
     res.render('index.html', {page:'dashboard', data:''});
+    res.end();
 });
 
 app.get('/dashboard', (req, res)=>{
     res.render('dashboard.html', null);
+    res.end();
 });
-
 app.get('/cold_kharid',async (req, res)=>{
-    const data = {
-        coldStore: await database.getColdStoreNames(),
-        seller:await database.getSellerDetails()
-    };
-    res.render('cold_kharid.html', data);
+    res.render('cold_kharid.html');
+    res.end();
 })
-
-
-
 app.get('/kisan_kharid', (req, res)=>{
     res.end('Working');
 });
@@ -47,68 +36,67 @@ app.get('/self_entry', (req, res)=>{
 
 app.post('/api/save_new_cold', async (req, res)=>{
     if(util.verifyInputs([req.body.name, req.body.bag, req.body.due])) {
-        let result = await database.insertColdStoreName(req.body.name, req.body.bag, req.body.due);
-        if (util.len(result)>0)
-            res.json(await database.getColdStoreNames());
-        else
-            res.json({});
-    }else
-        res.redirect('/error');
+        let result = await controller.saveColdStoreDetails(req.body.name, req.body.bag, req.body.due);
+        res.json(result);
+    }
+    else
+        res.status(400);
+    res.end();
 });
 
-app.post('/handler/cold_kharid', async (req, res)=>{
-    /*let upload=util.upload.array('in_files', 5);
+app.post('/api/cold_kharid', async (req, res)=>{
+    let result=await util.saveColdKharid(req.body);
+    res.json(result);
+    res.end();
+});
 
-    upload(req, res, async (err)=>{
-        if (err)
-            res.redirect('/error?msg='+err);
-        else {
-            console.log(req.body);
-            let result=await util.saveColdKharid(req.body, req.files);
-            if(result.insertedId != null)
-                res.render('index.html', {page:'cold_kharid', data:result.insertedId});
+app.post('/api/image', (req, res)=> {
+    let upload = controller.upload.array('in_files', 5);
+    upload(req, res, async (err) => {
+        if (err) {
+            res.status(403);
         }
-    })*/
-});
-app.post('/api/image', (req, res)=>{
-    let upload=util.upload.array('in_files', 5);
-    upload(req, res, async (err)=>{
-        if (err)
-            res.redirect('/error?msg='+err);
         else {
-            let result = await util.saveImages(req.files);
-            res.json(result);
+            if(req.files !== undefined) {
+                let result = await controller.saveImages(req.files);
+                res.json(result);
+            }
+            else {
+                res.status(400);
+            }
         }
         res.end();
     })
 });
 app.get('/api/image', async (req, res)=>{
     if(req.query.id != null) {
-        let result = await database.getImageData(req.query.id);
+        let result = await controller.getImageData(req.query.id);
         if (result.image != null) {
             res.contentType('image/jpeg');
             res.send(result.image.buffer);
-        } else
+        }
+        else
             res.status(404);
     }else
         res.status(400);
     res.end();
 });
 
-app.get('/form', (req, res)=>{
-    res.render('test.html', null);
+app.get('/error', (req, res)=>{
+    if(req.query.msg===undefined || req.query.msg==='')
+        req.query.msg="Unknown Error!";
+    res.render('error_page.html', {error:req.query.msg});
 });
-
-app.post('/test', async (req, res, next)=>{
-    res.send({});
-    res.end();
-});
-
 app.get('*', (req, res)=>{
     res.redirect('/error?msg=Invalid Request Type! (GET)')
 });
 app.post('*', (req, res)=>{
     res.redirect('/error?msg=Invalid Request Type! (POST)')
+});
+
+app.post('/test', async (req, res)=>{
+    res.send({});
+    res.end();
 });
 
 app.listen(8000);

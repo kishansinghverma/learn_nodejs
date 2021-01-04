@@ -14,44 +14,6 @@ function verifyInputs(inputs){
 let len=(object)=>{
     return Object.keys(object).length;
 }
-let storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now())
-    },
-})
-let fileFilter = (req, file, cb)=>{
-    if(file.mimetype.startsWith('image/'))
-        cb(null, true);
-    else
-        cb(null, false);
-};
-let upload=multer({
-    storage:storage,
-    fileFilter: fileFilter
-});
-let saveImages= async (files)=> {
-    let imageBinaries = [];
-    for (let file of files) {
-        let img = fs.readFileSync(file.path);
-        let imgBinary = img.toString('base64');
-        let imgObject = {
-            contentType: file.mimetype,
-            image: new Buffer.alloc(imgBinary.length, imgBinary, 'base64')
-        };
-        imageBinaries.push(imgObject);
-        fs.unlink(file.path, (err) => {
-            if (err)
-                console.log("Error Deleting File!")
-        });
-    }
-    if(imageBinaries.length>0)
-        return await database.saveImagesData(imageBinaries);
-    else
-        return {};
-}
 
 
 let saveColdKharid=async (formData)=>{
@@ -100,8 +62,6 @@ let saveColdKharid=async (formData)=>{
 
 module.exports={
     verifyInputs,
-    upload,
-    saveImages,
-    saveColdKharid,
-    len
+    len,
+    saveColdKharid
 }
