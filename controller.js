@@ -38,11 +38,18 @@ async function getImageData(imageId){
         return data;
     return {};
 }
-async function saveSellerDetails(document){
+async function saveSellerDetails(formData){
+    let document = {
+        name : formData.name,
+        address : formData.address,
+        mobile : formData.mobile !== undefined ? formData.mobile : "",
+        due : (formData.due !== undefined && formData.due !== "") ? formData.due : 0
+    }
+    console.log(JSON.stringify(document));
     const result=await database.insertDocument('seller', document);
     if(result!==null)
         return result;
-    return {};
+    return {};*/
 }
 async function updateSellerContact(sellerId, number){
     let query={_id:new mongo.ObjectID(sellerId)};
@@ -97,6 +104,7 @@ let saveImages= async (files)=> {
 
 module.exports={
     upload,
+    saveSellerDetails,
     saveColdKharidData,
     saveColdStoreDetails,
     getColdStoreNames,

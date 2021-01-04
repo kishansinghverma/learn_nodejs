@@ -43,6 +43,15 @@ app.post('/api/save_new_cold', async (req, res)=>{
         res.status(400).end();
 });
 
+app.post('/api/save_new_seller', async (req, res)=>{
+    if (util.verifyInputs([req.body.name, req.body.address])) {
+        await controller.saveSellerDetails(req.body);
+        res.status(200).end();
+    }
+    else
+        res.status(400).end();
+})
+
 app.post('/api/cold_kharid', async (req, res)=>{
     let result=await util.saveColdKharid(req.body);
     res.json(result);
