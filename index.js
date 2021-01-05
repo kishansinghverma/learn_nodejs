@@ -16,7 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.get('/', (req, res)=>{
     res.render('index.html', {page:'dashboard', data:''});
 });
-
 app.get('/dashboard', (req, res)=>{
     res.render('dashboard.html', null);
 });
@@ -26,11 +25,9 @@ app.get('/cold_kharid',async (req, res)=>{
 app.get('/kisan_kharid', (req, res)=>{
     res.end('Working');
 });
-
 app.get('/self_entry', (req, res)=>{
     res.end('Working');
 });
-
 app.post('/api/save_new_cold', async (req, res)=>{
     if(util.verifyInputs([req.body.name, req.body.bag, req.body.due])) {
         let result = await controller.saveColdStoreDetails(req.body.name, req.body.bag, req.body.due);
@@ -42,19 +39,27 @@ app.post('/api/save_new_cold', async (req, res)=>{
     else
         res.status(400).end();
 });
-
 app.post('/api/save_new_seller', async (req, res)=>{
     if (util.verifyInputs([req.body.name, req.body.address])) {
-        await controller.saveSellerDetails(req.body);
-        res.status(200).end();
+        let result = await controller.saveSellerDetails(req.body);
+        if (util.isEmpty(result))
+            res.status(500).end();
+        else
+            res.json(result);
     }
     else
         res.status(400).end();
 })
-
 app.post('/api/cold_kharid', async (req, res)=>{
-    let result=await util.saveColdKharid(req.body);
-    res.json(result);
+    if(util.verifyInputs([req.body.in_cold_id, req.body.in_seller_id])){
+        let result = await controller.saveColdKharidData(req.body);
+        if(util.isEmpty(result))
+            res.status(500).end();
+        else
+            res.json(result);
+    }
+    else
+        res.status(400).end();
 });
 
 app.post('/api/image', (req, res)=> {

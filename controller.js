@@ -43,23 +43,95 @@ async function saveSellerDetails(formData){
         name : formData.name,
         address : formData.address,
         mobile : formData.mobile !== undefined ? formData.mobile : "",
-        due : (formData.due !== undefined && formData.due !== "") ? formData.due : 0
+        txn : []
     }
-    console.log(JSON.stringify(document));
     const result=await database.insertDocument('seller', document);
-    if(result!==null)
-        return result;
-    return {};*/
+    if(result !== null && result.insertedCount > 0) {
+        return {
+            "insertedId": result.insertedId,
+            "name": document.name,
+            "address": document.address,
+        };
+    }
+    return {};
 }
 async function updateSellerContact(sellerId, number){
     let query={_id:new mongo.ObjectID(sellerId)};
     let newVal={$addToSet: {contact:number}};
     await database.updateDocument('seller', query, newVal);
 }
-async function saveColdKharidData(document){
-    const result=await database.insertDocument('cold_kharid', document);
-    if(result!==null)
-        return result;
+async function saveColdKharidData(formData){
+    //Creating Header details
+    let parentDocument = {
+        "cold_id": formData.in_cold_id,
+        "date": formData.in_date,
+        "seller_id": formData.in_seller_id,
+        "buyer_name": formData.in_buyer_name,
+        "image_id": formData.in_image_id
+    };
+
+    //Saving header document
+    let parentResult = await database.insertDocument("cold_kharid", parentDocument);
+
+    //Checking if the header saved successfully
+    if(parentResult !== null && parentResult.insertedCount > 0){
+        let childDocuments = [];
+
+        //Checking if there are multiple deals associated in form
+        if(Array.isArray(formData.in_lot)){
+            //Caching each deal individually
+            for (let i = 0; i < formData.in_lot.length; i++) {
+                let childDocument={
+                    "lot_no":formData.in_lot[i],
+                    "size":formData.in_size[i],
+                    "bags":formData.in_bags[i],
+                    "rate":formData.in_rate[i],
+                    "tol":formData.in_tol[i],
+                    "parent":"cold_kharid",
+                    "parent_id":parentResult.insertedId
+                }
+                childDocuments.push(childDocument);
+            }
+        }
+        else {
+            let childDocument={
+                "lot_no":formData.in_lot,
+                "size":formData.in_size,
+                "bags":formData.in_bags,
+                "rate":formData.in_rate,
+                "tol":formData.in_tol,
+                "parent":"cold_kharid",
+                "parent_id":parentResult.insertedId
+            }
+            childDocuments.push(childDocument);
+        }
+
+        let childResult = await database.insertDocuments("deals", childDocuments);
+        if(childResult !== null && childResult.insertedCount > 0){
+            //Updating parent with child Ids
+            let updates = {$set: {"child_ids": childResult.insertedIds}};
+            let query = {_id: parentResult.insertedId};
+            let finalResult=await database.updateDocument("cold_kharid", query, updates);
+
+            //Checking if child Ids placed in Parent document
+            if(finalResult !== null && finalResult.modifiedCount>0){
+                //TODO: Customize response
+                return {"parent": parentResult, "child": childResult};
+            }
+            else {
+                //Delete parent record
+                await database.deleteDocument("cold_kharid", {_id: parentResult.insertedId});
+
+                //Delete child records
+                let deleteSelection = {_id: {$in: childResult.insertedIds}};
+                await database.deleteDocument("deals", deleteSelection);
+            }
+        }
+        else {
+            //Delete parent record
+            await database.deleteDocument("cold_kharid", {_id: parentResult.insertedId});
+        }
+    }
     return {};
 }
 

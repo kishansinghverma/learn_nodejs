@@ -3,7 +3,7 @@ const MongoClient=mongo.MongoClient;
 const url='mongodb://127.0.0.1:27017/Potato_Manager';
 const params={useUnifiedTopology: true};
 
-const getList=async (collectionName, query, projection)=> {
+const getList = async (collectionName, query, projection) => {
     let client;
     let data;
 
@@ -12,7 +12,7 @@ const getList=async (collectionName, query, projection)=> {
         const db = client.db();
         const collection = db.collection(collectionName);
         data = await collection.find(query).project(projection).toArray();
-        client.close();
+        await client.close();
         return data;
 
     } catch (err) {
@@ -20,7 +20,7 @@ const getList=async (collectionName, query, projection)=> {
         return null;
     }
 };
-const getDocument=async (collectionName, query, projection)=> {
+const getDocument = async (collectionName, query, projection) => {
     let client;
     let data;
 
@@ -29,7 +29,7 @@ const getDocument=async (collectionName, query, projection)=> {
         const db = client.db();
         const collection = db.collection(collectionName);
         data = await collection.findOne(query, {projection: projection});
-        client.close();
+        await client.close();
         return data;
 
     } catch (err) {
@@ -37,7 +37,7 @@ const getDocument=async (collectionName, query, projection)=> {
         return null;
     }
 };
-const insertDocument= async (collectionName, document)=>{
+const insertDocument = async (collectionName, document) => {
     let client;
     let res;
     try {
@@ -45,7 +45,7 @@ const insertDocument= async (collectionName, document)=>{
         const db = client.db();
         const collection = db.collection(collectionName);
         res = await collection.insertOne(document);
-        client.close();
+        await client.close();
         delete res['ops'];
         return res;
 
@@ -54,7 +54,7 @@ const insertDocument= async (collectionName, document)=>{
         return null;
     }
 };
-const insertDocuments= async (collectionName, documents)=>{
+const insertDocuments = async (collectionName, documents) => {
     let client;
     let res;
     try {
@@ -62,7 +62,7 @@ const insertDocuments= async (collectionName, documents)=>{
         const db = client.db();
         const collection = db.collection(collectionName);
         res = await collection.insertMany(documents);
-        client.close();
+        await client.close();
         delete res['ops'];
         return res;
 
@@ -72,7 +72,7 @@ const insertDocuments= async (collectionName, documents)=>{
     }
 
 };
-const updateDocument=async (collectionName, query, newVal)=>{
+const updateDocument = async (collectionName, query, newVal) => {
     let client;
     let res;
     try {
@@ -80,7 +80,39 @@ const updateDocument=async (collectionName, query, newVal)=>{
         const db = client.db();
         const collection = db.collection(collectionName);
         res = await collection.updateOne(query, newVal);
-        client.close();
+        await client.close();
+        return res;
+
+    } catch (err) {
+        console.log(err.stack);
+        return null;
+    }
+};
+const deleteDocument = async (collectionName, query) => {
+    let client;
+    let res;
+    try {
+        client = await MongoClient.connect(url, params);
+        const db = client.db();
+        const collection = db.collection(collectionName);
+        res = await collection.deleteOne(query);
+        await client.close();
+        return res;
+
+    } catch (err) {
+        console.log(err.stack);
+        return null;
+    }
+};
+const deleteDocuments = async (collectionName, query) => {
+    let client;
+    let res;
+    try {
+        client = await MongoClient.connect(url, params);
+        const db = client.db();
+        const collection = db.collection(collectionName);
+        res = await collection.deleteMany(query);
+        await client.close();
         return res;
 
     } catch (err) {
@@ -94,5 +126,7 @@ module.exports={
     getDocument,
     insertDocument,
     insertDocuments,
-    updateDocument
+    updateDocument,
+    deleteDocument,
+    deleteDocuments
 };
