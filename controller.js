@@ -107,24 +107,30 @@ async function saveColdKharidData(formData){
         }
 
         let childResult = await database.insertDocuments("deals", childDocuments);
+
+        //Checking if children saved successfully
         if(childResult !== null && childResult.insertedCount > 0){
+            let childIds=[];
+            for(let x in childResult.insertedIds){
+                childIds.push(childResult.insertedIds[x]);
+            }
+
             //Updating parent with child Ids
-            let updates = {$set: {"child_ids": childResult.insertedIds}};
+            let updates = {$set: {"child_ids": childIds}};
             let query = {_id: parentResult.insertedId};
             let finalResult=await database.updateDocument("cold_kharid", query, updates);
 
             //Checking if child Ids placed in Parent document
-            if(finalResult !== null && finalResult.modifiedCount>0){
+            if (finalResult !== null && finalResult.modifiedCount > 0) {
                 //TODO: Customize response
                 return {"parent": parentResult, "child": childResult};
-            }
-            else {
+            } else {
                 //Delete parent record
                 await database.deleteDocument("cold_kharid", {_id: parentResult.insertedId});
 
                 //Delete child records
-                let deleteSelection = {_id: {$in: childResult.insertedIds}};
-                await database.deleteDocument("deals", deleteSelection);
+                let deleteSelection = {_id: {$in: childIds}};
+                await database.deleteDocuments("deals", deleteSelection);
             }
         }
         else {
@@ -180,6 +186,7 @@ module.exports={
     saveColdKharidData,
     saveColdStoreDetails,
     getColdStoreNames,
+    getSellerDetails,
     getImageData,
     saveImages
 }
