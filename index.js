@@ -108,7 +108,7 @@ app.post('*', (req, res)=>{
 });
 
 app.post('/test', async (req, res)=>{
-    res.send({});
+    console.log(JSON.stringify(req.body))
     res.end();
 });
 

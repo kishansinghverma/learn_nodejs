@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Management System</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Helvetica Neue">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+    <script src="../public/js/popper.min.js"></script>
+    <script src="../public/js/jquery.min.js"></script>
+
     <style>
         body{
             background-color: #ecf1f5;
@@ -18,13 +18,13 @@
             outline: none;
         }
         .m-font{
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: Helvetica, Arial, sans-serif;
         }
 
         .m-nav a{
             padding: 20px 50px;
             text-decoration: none;
-            font-family: "Helvetica Neue", Helvetica,Arial,sans-serif;
+            font-family: Helvetica, Arial,sans-serif;
             letter-spacing: 1px;
             font-size: 15px;
             color: #5e5e5e;
@@ -63,11 +63,11 @@
             <div class="m-font" style="padding: 20px 30px; font-weight: bold; font-size: 18px" >
                 <i class="fa fa-leaf fa-lg"></i>&nbsp; Potato Manager</div>
 
-            <a href="#" onclick="loadDashboard()" id="dashboard" aria-expanded="false">
+            <a href="#" id="dashboard" aria-expanded="false">
                 <i class="fa fa-dashboard fa-lg"></i>&nbsp; Dashboard</a>
 
             <a href="#forms" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
-                <i class="fa fa-table fa-lg"></i>&nbsp; Entry Form &nbsp;<i class="fa fa-angle-down fa-lg"></i></a>
+                <i class="fa fa-table fa-lg"></i>&nbsp; Entry Forms &nbsp;<i class="fa fa-angle-down fa-lg"></i></a>
 
             <div id="forms" class="collapse">
                 <a class="sub-nav" href="#cold_kharid" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Cold Kharid Form</a>
@@ -84,11 +84,24 @@
                 <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; View Self Entry</a>
             </div>
 
-            <a href="#" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
-                <i class="fa fa-cogs fa-lg"></i>&nbsp; Management</a>
+            <a href="#management" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
+                <i class="fa fa-cogs fa-lg"></i>&nbsp; Management <span style="margin-right: 0px;"><i class="fa fa-angle-down fa-lg"></i></span></a>
 
-            <a href="#" onclick="toggleLinksDisplay(this)" id="report" data-toggle="collapse" aria-expanded="false">
+            <div id="management" class="collapse">
+                <a class="sub-nav" href="#display_cold_kharid" onclick="loadChild(this)"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
+                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
+                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
+            </div>
+
+            <a href="#report" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
                 <i class="fa fa-print fa-lg"></i>&nbsp; Reports</a>
+
+            <div id="report" class="collapse">
+                <a class="sub-nav" href="#display_cold_kharid" onclick="loadChild(this)"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
+                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
+                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
+            </div>
+
         </div>
     </div>
     <div style="margin-right: -15px; margin-left: 248px;">
@@ -122,5 +135,87 @@
     </div>
 </div>
 </body>
-<script src="/js/index.js"></script>
+<script>
+    $(document).ready(function(){
+        let innerPageData;
+        try {
+            innerPageData = JSON.parse($('#inner-page')[0].innerHTML);
+            functions[innerPageData.page]();
+        }catch (e){console.log(e)}
+    });
+    let header={
+        /*dashboard:'dashboard',*/
+        cold_kharid:'cold kharid form',
+        kisan_kharid:'kisan kharid form',
+        self_entry:'self entry form',
+        display_cold_kharid:'view cold kharid',
+        display_kisan_kharid:'view kisan kharid',
+        display_self_entry:'view self entry'
+    }
+    let functions={
+        dashboard: ()=>{loadDashboard();},
+        cold_kharid: ()=>{
+            let tabData=getTabData('cold_kharid');
+            loadChild(tabData.element);
+            doGet(tabData.innerLink);
+        },
+        display_cold_kharid: ()=>{
+            let tabData=getTabData('display_cold_kharid')
+
+        }
+    }
+
+    function getTabData(tabName){
+        return {
+            header:header[tabName],
+            innerLink: '/'+tabName,
+            JSLink: '/js/'+tabName+'.js',
+            element: $('[href="#'+tabName+'"]')[0]
+        }
+    }
+
+    function doGet(link){
+        $.ajax({
+            url: link,
+            success: function( result ) {
+                $('#target').html(result);
+                loadScript();
+            }
+        });
+    }
+    function doPost(tab, data){
+
+    }
+    function toggleLinksDisplay(tab){
+        let id=tab.href.split("#")[1];
+        $('.collapse').collapse('hide');
+        $('#'+id).collapse('show');
+    }
+    function activateChild(child){
+        $('.sub-nav').removeClass('active');
+        $(child).addClass('active');
+    }
+    function activateTab(){
+        $('[aria-expanded=false]').removeClass('active');
+        $('[aria-expanded=true]').addClass('active');
+    }
+
+    function loadChild(child){
+        activateChild(child);
+        activateTab();
+        let childName=child.href.split('#')[1];
+        let tabData=getTabData(childName);
+        loadHelpers(tabData);
+        doGet(tabData.innerLink);
+    }
+    function loadPage(page){
+
+        doGet(tabData.innerLink);
+    }
+
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+
+</script>
 </html>

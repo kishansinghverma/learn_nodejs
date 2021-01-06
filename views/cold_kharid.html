@@ -9,17 +9,17 @@
 </head>
 <body>
 <div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
-    <form action="/handler/cold_kharid" method="post" enctype="multipart/form-data">
+    <form action="/test" method="get" enctype="multipart/form-data">
         <div class="form-row mb-4">
             <div class="col">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Cold Storage</span>
                     </div>
-                    <select name="in_cold_name" id="cold-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
-                        <option disabled selected>Select Cold Storage Name</option>
+                    <select name="in_cold_id" id="cold-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
+                        <option disabled selected>Select Cold Store Name</option>
                         {{#coldStore}}
-                        <option value="{{name}}">{{name}}</option>
+                        <option value="{{_id}}">{{name}}</option>
                         {{/coldStore}}
                         <option value="add">Add New Cold Store</option>
                     </select>
@@ -40,14 +40,14 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Seller Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Seller Name & Address" list="seller-name" onfocusout="generateFieldData(this)" id="seller-name-input" name="in_seller_name" required>
-                </div>
-                <datalist id="seller-name">
+                    <select name="in_seller_id" id="seller-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
+                        <option disabled selected>Select Seller Name</option>
                         {{#seller}}
-                        <option value="{{name}}" name="{{name}}" id='{"id":"{{_id}}","contact":[{{contact}}]}'>
+                        <option value="{{_id}}">{{name}}</option>
                         {{/seller}}
-                </datalist>
-                <input type="text" name="in_seller_id" id="seller-id" style="display: none">
+                        <option value="add">Add New Seller</option>
+                    </select>
+                </div>
             </div>
             <div class="col">
                 <div class="input-group">
@@ -78,7 +78,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Type</span>
                         </div>
-                        <select class="form-control" name="in_type" name="in-size">
+                        <select class="form-control" name="in_size">
                             <option disabled selected>Potato Size</option>
                             <option value="Gulla">Gulla</option>
                             <option value="Mota">Mota</option>
@@ -91,7 +91,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Packets</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Bags" name="in_bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
+                        <input type="text" class="form-control" placeholder="Bags" name="in_bags" required pattern="[0-9]+" title="Enter Number Of Packets!">
                     </div>
                 </div>
                 <div class="col">
@@ -198,7 +198,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Type</span>
                 </div>
-                <select class="form-control" name="in_type" name="in-size">
+                <select class="form-control" name="in_size">
                     <option disabled selected>Potato Size</option>
                     <option value="Gulla">Gulla</option>
                     <option value="Mota">Mota</option>
@@ -211,7 +211,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Packets</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Bags" name="in_bag" required pattern="[0-9]+" title="Enter Number Of Packets!">
+                <input type="text" class="form-control" placeholder="Bags" name="in_bags" required pattern="[0-9]+" title="Enter Number Of Packets!">
             </div>
         </div>
         <div class="col">
@@ -393,4 +393,13 @@
         return false;
     }
 </script>
+
+<script>
+    var x = document.getElementById("cold-name-list");
+    var newOption=document.createElement("OPTION");
+    newOption.value="ids";
+    newOption.innerHTML = "Newly Added";
+    x.insertBefore(newOption, x.childNodes[2]);
+</script>
+
 </html>
