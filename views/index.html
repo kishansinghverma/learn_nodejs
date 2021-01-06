@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Management System</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../public/css/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../public/css/bootstrap.min.css">
-    <script src="../public/js/popper.min.js"></script>
-    <script src="../public/js/jquery.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
         body{
@@ -28,7 +30,6 @@
             letter-spacing: 1px;
             font-size: 15px;
             color: #5e5e5e;
-            text-align: left;
         }
         .m-nav a.active{
             font-weight: bold;
@@ -61,47 +62,53 @@
     <div class="m-nav ml-n3" style="width: 265px; position: fixed; height: 100vh; background-color: #ffffff; box-shadow: 0px 5px 5px #888888;">
         <div class="d-flex flex-column">
             <div class="m-font" style="padding: 20px 30px; font-weight: bold; font-size: 18px" >
-                <i class="fa fa-leaf fa-lg"></i>&nbsp; Potato Manager</div>
+                <i class="fa fa-leaf fa-lg"></i>&emsp;Potato Manager</div>
 
-            <a href="#" id="dashboard" aria-expanded="false">
-                <i class="fa fa-dashboard fa-lg"></i>&nbsp; Dashboard</a>
+            <a href="#" id="dashboard">
+                <i class="fa fa-dashboard fa-lg"></i>&emsp;Dashboard</a>
 
-            <a href="#forms" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
-                <i class="fa fa-table fa-lg"></i>&nbsp; Entry Forms &nbsp;<i class="fa fa-angle-down fa-lg"></i></a>
-
-            <div id="forms" class="collapse">
-                <a class="sub-nav" href="#cold_kharid" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Cold Kharid Form</a>
-                <a class="sub-nav" href="#kisan_kharid" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Kisan Kharid Form</a>
-                <a class="sub-nav" href="#self_entry" onclick="loadChild(this)"><i class="fa fa-file-text fa-mg"></i>&nbsp; Manual Entry Form</a>
+            <a href="#forms" onclick="toggleLinkDisplay(this)">
+                <span class="float-left"><i class="fa fa-table fa-lg"></i>&emsp;Entry Forms</span>
+                <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
+            </a>
+            <div id="forms-sub-nav" class="collapse">
+                <a class="sub-nav" href="#cold_kharid"><i class="fa fa-file-text fa-mg"></i>&emsp;Cold Kharid Form</a>
+                <a class="sub-nav" href="#kisan_kharid"><i class="fa fa-file-text fa-mg"></i>&emsp;Kisan Kharid Form</a>
+                <a class="sub-nav" href="#self_entry"><i class="fa fa-file-text fa-mg"></i>&emsp;Manual Entry Form</a>
             </div>
 
-            <a href="#routines" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
-                <i class="fa fa-pencil-square-o fa-lg"></i>&nbsp; Routines <i class="fa fa-angle-down fa-lg"></i></a>
+            <a href="#routines" onclick="toggleLinkDisplay(this)">
+                <span class="float-left"><i class="fa fa-pencil-square-o fa-lg"></i>&emsp;Routines</span>
+                <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
+            </a>
 
-            <div id="routines" class="collapse">
-                <a class="sub-nav" href="#display_cold_kharid" onclick="loadChild(this)"><i class="fa fa-pencil fa-mg"></i>&nbsp; View Cold Kharid</a>
-                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; View Kisan Kharid</a>
-                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; View Self Entry</a>
+            <div id="routines-sub-nav" class="collapse">
+                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&emsp;View Cold Kharid</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;View Kisan Kharid</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;View Self Entry</a>
             </div>
 
-            <a href="#management" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
-                <i class="fa fa-cogs fa-lg"></i>&nbsp; Management <span style="margin-right: 0px;"><i class="fa fa-angle-down fa-lg"></i></span></a>
+            <a href="#management" onclick="toggleLinkDisplay(this)">
+                <span class="float-left"><i class="fa fa-cogs fa-lg"></i>&emsp;Management </span>
+                <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
+            </a>
 
-            <div id="management" class="collapse">
-                <a class="sub-nav" href="#display_cold_kharid" onclick="loadChild(this)"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
-                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
-                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
+            <div id="management-sub-nav" class="collapse">
+                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
             </div>
 
-            <a href="#report" onclick="toggleLinksDisplay(this)" data-toggle="collapse" aria-expanded="false">
-                <i class="fa fa-print fa-lg"></i>&nbsp; Reports</a>
+            <a href="#report" onclick="toggleLinkDisplay(this)">
+                <span class="float-left"><i class="fa fa-print fa-lg"></i>&emsp;Reports</span>
+                <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
+            </a>
 
-            <div id="report" class="collapse">
-                <a class="sub-nav" href="#display_cold_kharid" onclick="loadChild(this)"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
-                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
-                <a class="sub-nav" href="#" onclick="loadChild(this)"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
+            <div id="report-sub-nav" class="collapse">
+                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
             </div>
-
         </div>
     </div>
     <div style="margin-right: -15px; margin-left: 248px;">
@@ -136,7 +143,18 @@
 </div>
 </body>
 <script>
-    $(document).ready(function(){
+    function toggleLinkDisplay(element){
+        let selector='#'+element.href.split('#')[1]+'-sub-nav';
+        $('.collapse').collapse('hide');
+        $(selector).collapse('toggle');
+
+        $('.fa-angle-up').addClass('fa-angle-down');
+        $('.fa-angle-up').removeClass('fa-angle-up');
+        element.lastElementChild.lastElementChild.className = "fa fa-angle-up fa-lg";
+
+    }
+
+    /*$(document).ready(function(){
         let innerPageData;
         try {
             innerPageData = JSON.parse($('#inner-page')[0].innerHTML);
@@ -144,7 +162,7 @@
         }catch (e){console.log(e)}
     });
     let header={
-        /*dashboard:'dashboard',*/
+        /!*dashboard:'dashboard',*!/
         cold_kharid:'cold kharid form',
         kisan_kharid:'kisan kharid form',
         self_entry:'self entry form',
@@ -186,11 +204,7 @@
     function doPost(tab, data){
 
     }
-    function toggleLinksDisplay(tab){
-        let id=tab.href.split("#")[1];
-        $('.collapse').collapse('hide');
-        $('#'+id).collapse('show');
-    }
+
     function activateChild(child){
         $('.sub-nav').removeClass('active');
         $(child).addClass('active');
@@ -209,10 +223,9 @@
         doGet(tabData.innerLink);
     }
     function loadPage(page){
-
         doGet(tabData.innerLink);
     }
-
+*/
     if ( window.history.replaceState ) {
         window.history.replaceState( null, null, window.location.href );
     }
