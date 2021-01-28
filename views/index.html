@@ -2,233 +2,310 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="width=device-width initial-scale=1.0" name="viewport">
     <title>Management System</title>
 
-    <link rel="stylesheet" href="../public/css/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+    <!--<link href="../public/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../public/js/PageData.js"></script>-->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/PageData.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
-        body{
+        body {
             background-color: #ecf1f5;
-        }
-        input:focus{
-            outline: none;
-        }
-        .m-font{
             font-family: Helvetica, Arial, sans-serif;
         }
 
-        .m-nav a{
+        input:focus {
+            outline: none;
+        }
+
+        .m-nav{
+            width: 265px;
+            height: 100vh;
+            float: left;
+            background-color: #ffffff;
+            box-shadow: 0px 5px 5px #888888;
+        }
+        .m-nav.active{
+            width: 265px;
+            height: 100vh;
+            float: left;
+            background-color: #ffffff;
+            box-shadow: 0px 5px 5px #888888;
+        }
+
+        .m-nav a {
             padding: 20px 50px;
             text-decoration: none;
-            font-family: Helvetica, Arial,sans-serif;
             letter-spacing: 1px;
             font-size: 15px;
             color: #5e5e5e;
         }
-        .m-nav a.active{
+
+        .m-nav a.active {
             font-weight: bold;
-            border-left: #4cae4c 5px solid;
+            border-left: #797979 5px solid;
             padding: 20px 45px;
             text-decoration: none;
         }
+
         .m-nav a:hover {
             background-color: #dbdbdb;
             transition: 0.3s;
             text-decoration: none;
         }
+
         a.sub-nav {
             font-size: 14px;
             padding-left: 60px;
             padding-right: 0px;
             display: block;
         }
-        a.sub-nav.active{
-            border-right: #1eb69f 4px solid;
+
+        a.sub-nav.active {
+            border-right: #00a719 5px solid;
             border-left: none;
             padding-left: 60px;
             padding-right: 0px;
         }
+
+        .header-container{
+            box-shadow: 1px 1px 1px #ccc;
+            padding: 10px 40px 10px 10px;
+            background-color: #ffffff;
+            text-align: right;
+        }
+
+        .header{
+            font-weight: bolder;
+            font-size: 0.9em;
+            letter-spacing: 2px;
+            text-transform: uppercase
+        }
+
+        .search-btn{
+            border: none;
+            background-color: #ccc;
+            font-size:17px;
+            padding: 10px 20px 10px 20px;
+            border-bottom-right-radius: 25px;
+            border-top-right-radius: 25px;
+        }
+
+        .search-input{
+            border-radius: 25px;
+            border: none;
+            width: 25%;
+            font-size: 17px;
+            padding: 10px 40px 10px 15px;
+            margin-right: -40px;
+            font-weight: bold; color: #2f323e;
+        }
+        .search-container{
+            background-color: #2f323e;
+            text-align: right;
+            padding: 30px 40px 30px 30px;
+        }
+        .navbar-btn{
+            float: left;
+            border: none;
+            background-color: transparent;
+            padding-top: 8px;
+            display: none;
+        }
+        .nav-inner-btn{
+            float: right;
+            padding-top: 3px;
+            display: none;
+        }
+        .remaining{
+            display: inline;
+        }
+        .remaining.active{
+            display: inline;
+        }
+        #target{
+            padding: 50px 30px 10px 30px;
+            margin-left: 265px;
+        }
+        
+        @media screen and (max-width: 600px) {
+            .m-nav {
+                display: none;
+            }
+            .m-nav.active{
+                width: 100%;
+                display: inline;
+            }
+            .search-input{
+                width: 60%;
+            }
+            .search-container{
+                padding: 15px 20px 15px 15px;
+            }
+            .header-container{
+                padding: 10px 10px 10px 20px;
+                text-align: left;
+            }
+            .navbar-btn, .nav-inner-btn{
+                display: inline;
+            }
+            .remaining{
+                display: none;
+            }
+            .remaining.active{
+                display: inline;
+            }
+
+            #target{
+                margin-left: 0px;
+                padding: 40px 30px 10px 30px;
+            }
+        }
+
     </style>
 </head>
 <body>
-<div id="inner-page" style="display: none">{"page":"{{page}}", "data":"{{data}}"}</div>
-<div class="container-fluid">
-    <div class="m-nav ml-n3" style="width: 265px; position: fixed; height: 100vh; background-color: #ffffff; box-shadow: 0px 5px 5px #888888;">
+<div>
+    <div class="m-nav">
         <div class="d-flex flex-column">
-            <div class="m-font" style="padding: 20px 30px; font-weight: bold; font-size: 18px" >
-                <i class="fa fa-leaf fa-lg"></i>&emsp;Potato Manager</div>
+            <div class="m-font" style="padding: 20px 30px; font-weight: bold; font-size: 18px; letter-spacing: 1px;">
+                <i class="fa fa-leaf fa-lg"></i>&emsp;Potato Manager <i class="fa fa-bars fa-lg nav-inner-btn"></i>
+            </div>
 
-            <a href="#" id="dashboard">
+            <a data-toggle="collapse" href="#dash_board" id="dashboard">
                 <i class="fa fa-dashboard fa-lg"></i>&emsp;Dashboard</a>
 
-            <a href="#forms" onclick="toggleLinkDisplay(this)">
+            <a data-toggle="collapse" href="#forms">
                 <span class="float-left"><i class="fa fa-table fa-lg"></i>&emsp;Entry Forms</span>
                 <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
             </a>
-            <div id="forms-sub-nav" class="collapse">
+            <div class="collapse" id="forms">
                 <a class="sub-nav" href="#cold_kharid"><i class="fa fa-file-text fa-mg"></i>&emsp;Cold Kharid Form</a>
                 <a class="sub-nav" href="#kisan_kharid"><i class="fa fa-file-text fa-mg"></i>&emsp;Kisan Kharid Form</a>
                 <a class="sub-nav" href="#self_entry"><i class="fa fa-file-text fa-mg"></i>&emsp;Manual Entry Form</a>
             </div>
 
-            <a href="#routines" onclick="toggleLinkDisplay(this)">
+            <a data-toggle="collapse" href="#routines">
                 <span class="float-left"><i class="fa fa-pencil-square-o fa-lg"></i>&emsp;Routines</span>
                 <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
             </a>
-
-            <div id="routines-sub-nav" class="collapse">
-                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&emsp;View Cold Kharid</a>
-                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;View Kisan Kharid</a>
-                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;View Self Entry</a>
+            <div class="collapse" id="routines">
+                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&emsp;View
+                    Cold Kharid</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;View Kisan
+                    Kharid</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;View Self
+                    Entry</a>
             </div>
 
-            <a href="#management" onclick="toggleLinkDisplay(this)">
+            <a data-toggle="collapse" href="#management">
                 <span class="float-left"><i class="fa fa-cogs fa-lg"></i>&emsp;Management </span>
                 <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
             </a>
-
-            <div id="management-sub-nav" class="collapse">
-                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
+            <div class="collapse" id="management">
+                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&nbsp;ABC</a>
                 <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
                 <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
             </div>
 
-            <a href="#report" onclick="toggleLinkDisplay(this)">
+            <a data-toggle="collapse" href="#reports">
                 <span class="float-left"><i class="fa fa-print fa-lg"></i>&emsp;Reports</span>
                 <span class="float-right"><i class="fa fa-angle-down fa-lg"></i></span>
             </a>
-
-            <div id="report-sub-nav" class="collapse">
-                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&nbsp; ABC</a>
-                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; HIJ</a>
-                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&nbsp; XYZ</a>
+            <div class="collapse" id="reports">
+                <a class="sub-nav" href="#display_cold_kharid"><i class="fa fa-pencil fa-mg"></i>&nbsp;ABC</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;HIJ</a>
+                <a class="sub-nav" href="#"><i class="fa fa fa-pencil fa-mg"></i>&emsp;XYZ</a>
             </div>
         </div>
     </div>
-    <div style="margin-right: -15px; margin-left: 248px;">
-        <div>
-            <div style="padding: 10px; background-color: #2f323e; text-align: right;">
-                <input type="text" placeholder="Global Search..." name="search" style="padding: 10px; margin: 5px; border-radius: 25px; border: none; width: 25%; font-size: 17px; padding-left: 15px; padding-right: 40px; font-weight: bold; color: #2f323e;">
-                <i class="fa fa-search" style="margin-left: -40px; margin-right: 50px; color: #2f323e;"></i>
-            </div>
-            <div style="box-shadow: 1px 1px 1px #ccc; padding: 10px; background-color: #ffffff; text-align: right;">
-                <div id="header" style="margin: 8px; margin-right: 25px; font-weight: bolder; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; letter-spacing: 2px"></div>
-            </div>
-            <div id="target" style="margin-left: 35px; margin-top: 45px; margin-right: 30px;"></div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="alertModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="info-modal-header"></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="info-model-message"></p>
-            </div>
-            <div class="modal-footer" id="info-modal-footer">
-                <button type="button" id="info-modal-action-button" class="btn btn-success" data-dismiss="modal"></button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    <div class="remaining active">
+        <div class="search-container">
+            <button class="navbar-btn" onclick="showNavBar()"><i class="fa fa-bars fa-2x" style="color: #dcdcdc;"></i></button>
+            <div>
+                <input name="search" placeholder="Global Search..." class="search-input" type="text">
+                <button class="search-btn"><i class="fa fa-search" style="color: #5a5a5a;"></i></button>
             </div>
         </div>
+        <div class="header-container">
+            <div id="header" class="header">Test</div>
+        </div>
+        <div id="target"></div>
     </div>
 </div>
 </body>
 <script>
-    function toggleLinkDisplay(element){
-        let selector='#'+element.href.split('#')[1]+'-sub-nav';
-        $('.collapse').collapse('hide');
-        $(selector).collapse('toggle');
+    $(document).ready(function () {
+        //Event Callbacks to handle navigation link collapsing behaviour
+        $('.collapse').on('hide.bs.collapse', function () {
+            let element = $("[href=\\#"+this.id+"]")[0];
+            element.children[1].children[0].className='fa fa-angle-down fa-lg';
+        });
+        $('.collapse').on('show.bs.collapse', function () {
+            $('.collapse').collapse('hide');
+            let element = $("[href=\\#"+this.id+"]")[0];
+            element.children[1].children[0].className='fa fa-angle-up fa-lg';
+        });
 
-        $('.fa-angle-up').addClass('fa-angle-down');
-        $('.fa-angle-up').removeClass('fa-angle-up');
-        element.lastElementChild.lastElementChild.className = "fa fa-angle-up fa-lg";
+        //Event Handlers to perform action on link click
+        $('.sub-nav').click(function(){
+            //Marking a child item active
+            $('.sub-nav').removeClass('active');
+            $(this).addClass('active');
 
-    }
+            //Marking a parent item active
+            $('[data-toggle=collapse]').removeClass('active');
+            $('[href=\\#'+this.parentElement.id+']').addClass('active');
+            loadPage(this);
+        });
 
-    /*$(document).ready(function(){
-        let innerPageData;
-        try {
-            innerPageData = JSON.parse($('#inner-page')[0].innerHTML);
-            functions[innerPageData.page]();
-        }catch (e){console.log(e)}
+        //Handling the dashboard click event
+        $('#dashboard').click(function (){
+            $('.collapse').collapse('hide');
+            $('.sub-nav').removeClass('active');
+            $('[data-toggle=collapse]').removeClass('active');
+            $(this).addClass('active');
+            loadPage(this);
+        });
+
+        $('#dashboard').click();
     });
-    let header={
-        /!*dashboard:'dashboard',*!/
-        cold_kharid:'cold kharid form',
-        kisan_kharid:'kisan kharid form',
-        self_entry:'self entry form',
-        display_cold_kharid:'view cold kharid',
-        display_kisan_kharid:'view kisan kharid',
-        display_self_entry:'view self entry'
-    }
-    let functions={
-        dashboard: ()=>{loadDashboard();},
-        cold_kharid: ()=>{
-            let tabData=getTabData('cold_kharid');
-            loadChild(tabData.element);
-            doGet(tabData.innerLink);
-        },
-        display_cold_kharid: ()=>{
-            let tabData=getTabData('display_cold_kharid')
 
-        }
+    function loadPage(node){
+        let page = node.href.split("#")[1];
+        $('#header').text(pageData[page].header);
+        doGet(pageData[page].endpoint);
+        hideNavBar();
     }
-
-    function getTabData(tabName){
-        return {
-            header:header[tabName],
-            innerLink: '/'+tabName,
-            JSLink: '/js/'+tabName+'.js',
-            element: $('[href="#'+tabName+'"]')[0]
-        }
-    }
-
     function doGet(link){
         $.ajax({
             url: link,
             success: function( result ) {
                 $('#target').html(result);
-                loadScript();
             }
         });
     }
-    function doPost(tab, data){
 
-    }
-
-    function activateChild(child){
-        $('.sub-nav').removeClass('active');
-        $(child).addClass('active');
-    }
-    function activateTab(){
-        $('[aria-expanded=false]').removeClass('active');
-        $('[aria-expanded=true]').addClass('active');
+    function showNavBar(){
+        $('.remaining').removeClass('active');
+        $('.m-nav').addClass('active');
     }
 
-    function loadChild(child){
-        activateChild(child);
-        activateTab();
-        let childName=child.href.split('#')[1];
-        let tabData=getTabData(childName);
-        loadHelpers(tabData);
-        doGet(tabData.innerLink);
+    function hideNavBar(){
+        $('.remaining').addClass('active')
+        $('.m-nav').removeClass('active');
     }
-    function loadPage(page){
-        doGet(tabData.innerLink);
-    }
-*/
-    if ( window.history.replaceState ) {
-        window.history.replaceState( null, null, window.location.href );
-    }
+
+    if (window.history.replaceState) {window.history.replaceState(null, null, window.location.href);}
 
 </script>
 </html>

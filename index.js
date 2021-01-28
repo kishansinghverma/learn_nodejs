@@ -14,10 +14,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', (req, res)=>{
-    res.render('index.html', {page:'dashboard', data:''});
+    res.render('index.html');
 });
 app.get('/dashboard', (req, res)=>{
-    res.render('dashboard.html', null);
+    res.render('dashboard.html');
 });
 app.get('/cold_kharid',async (req, res)=>{
     res.render('cold_kharid.html');
