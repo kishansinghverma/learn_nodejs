@@ -2,6 +2,7 @@ const multer = require('multer');
 const mongo=require('mongodb');
 const fs = require('fs');
 const database=require('./databaseManager');
+const util = require('./utility');
 
 async function getColdStoreNames(){
     const data=await database.getList('cold_store', {}, {_id:0, name:1});
@@ -10,11 +11,15 @@ async function getColdStoreNames(){
     return {};
 }
 async function saveColdStoreDetails(name, bag, due){
+    let queryDocument=await database.getList('cold_store', {name:name});
+    if(util.len(queryDocument)>0)
+        return {statusCode:409};
+
     const document={name:name, bag:bag, due:due};
     const res=await database.insertDocument('cold_store', document);
     if(res !== null && res.insertedCount > 0)
         return {"insertedId" : res.insertedId, "name" : name};
-    return {};
+    return {statusCode:500};
 }
 async function getSellerDetails(){
     const data=await database.getList('seller', {}, {});
@@ -39,6 +44,10 @@ async function getImageData(imageId){
     return {};
 }
 async function saveSellerDetails(formData){
+    let queryDocument=await database.getList('seller', {name: formData.name, mobile: formData.mobile, address: formData.address});
+    if(util.len(queryDocument)>0)
+        return {statusCode:409};
+
     let document = {
         name : formData.name,
         address : formData.address,
@@ -51,9 +60,10 @@ async function saveSellerDetails(formData){
             "insertedId": result.insertedId,
             "name": document.name,
             "address": document.address,
+            "mobile":document.mobile
         };
     }
-    return {};
+    return {statusCode:500};
 }
 async function updateSellerContact(sellerId, number){
     let query={_id:new mongo.ObjectID(sellerId)};

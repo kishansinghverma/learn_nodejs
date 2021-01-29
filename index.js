@@ -31,8 +31,8 @@ app.get('/self_entry', (req, res)=>{
 app.post('/api/save_new_cold', async (req, res)=>{
     if(util.verifyInputs([req.body.name, req.body.bag, req.body.due])) {
         let result = await controller.saveColdStoreDetails(req.body.name, req.body.bag, req.body.due);
-        if (util.isEmpty(result))
-            res.status(500).end()
+        if (result.statusCode !== undefined)
+            res.status(result.statusCode).end();
         else
             res.json(result);
     }
@@ -42,8 +42,8 @@ app.post('/api/save_new_cold', async (req, res)=>{
 app.post('/api/save_new_seller', async (req, res)=>{
     if (util.verifyInputs([req.body.name, req.body.address])) {
         let result = await controller.saveSellerDetails(req.body);
-        if (util.isEmpty(result))
-            res.status(500).end();
+        if (result.statusCode !== undefined)
+            res.status(result.statusCode).end();
         else
             res.json(result);
     }

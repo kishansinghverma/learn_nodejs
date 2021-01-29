@@ -121,6 +121,8 @@ const deleteDocuments = async (collectionName, query) => {
     }
 };
 
+
+
 module.exports={
     getList,
     getDocument,

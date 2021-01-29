@@ -1,4 +1,4 @@
-<div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px;">
+<div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px; font-family: Gadugi, Arial, sans-serif">
     <form action="/test" method="get" enctype="multipart/form-data">
         <div class="form-row mb-4">
             <div class="col">
@@ -6,7 +6,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Cold Storage</span>
                     </div>
-                    <select name="in_cold_id" id="cold-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
+                    <select name="in_cold_id" id="cold-name-list" class="form-control" oninput="showModal(this.value, '#newCold_Modal')">
                         <option disabled selected>Select Cold Store Name</option>
                         {{#coldStore}}
                         <option value="{{_id}}">{{name}}</option>
@@ -30,7 +30,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Seller Name</span>
                     </div>
-                    <select name="in_seller_id" id="seller-name-list" class="form-control" oninput="showColdStoreInsertModal(this)">
+                    <select name="in_seller_id" id="seller-name-list" class="form-control" oninput="showModal(this.value, '#newSeller_Modal')">
                         <option disabled selected>Select Seller Name</option>
                         {{#seller}}
                         <option value="{{_id}}">{{name}}</option>
@@ -123,56 +123,121 @@
         </div>
     </form>
 </div>
-<div class="container">
-    <form onsubmit="return saveColdStoreData()" id="new-cold-form">
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add New Cold Store</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-row mb-4 mt-2 mr-5 ml-5">
-                        <div class="col">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Cold Storage</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Cold Storage Name" title="Provide Cold Name!" id="cold-name" required>
+<div class="modal fade" id="newCold_Modal">
+    <form id="newCold_Form" action="#" onsubmit="saveNewColdDetails()">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add New Cold Store</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row mb-4 mt-2 mr-5 ml-5">
+                    <div class="col">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Cold Storage</span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-row mb-4 mr-5 ml-5">
-                        <div class="col">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Bags</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Bags Already Stored" pattern="[0-9]+" title="Enter Number Of Bags!" id="bag" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row mb-2 mr-5 ml-5">
-                        <div class="col">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Dues</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Any Due Amount" pattern="[0-9]+" title="Enter Due Amount!" id="due" required>
-                            </div>
+                            <input type="text" class="form-control" placeholder="Cold Storage Name" title="Provide Cold Name!" id="cold-name" required>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <div id="new-cold-error" class="col m-font" style="color: #d54c36;"></div>
-                    <button type="submit" class="btn btn-success col-sm-3" id="add-cold-btn">Save</button>
+                <div class="form-row mb-4 mr-5 ml-5">
+                    <div class="col">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Bags</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Bags Already Stored" pattern="[0-9]+" title="Enter Number Of Bags!" id="bag" required>
+                        </div>
+                    </div>
                 </div>
+                <div class="form-row mb-2 mr-5 ml-5">
+                    <div class="col">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Dues</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Any Due Amount" pattern="[0-9]+" title="Enter Due Amount!" id="due" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="new-cold-progress" class="col m-font"></div>
+                <button type="submit" class="btn btn-success col-sm-3">Save</button>
             </div>
         </div>
     </div>
     </form>
 </div>
+<div class="modal fade" id="newSeller_Modal" onsubmit="saveNewSellerDetails()">
+    <form action="#" id="newSeller_Form">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add New Seller</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row mb-4 mt-2 mr-5 ml-5">
+                    <div class="col">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Seller</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Seller Name" title="Provide Seller Name!" id="seller-name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row mb-4 mr-5 ml-5">
+                    <div class="col">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Address</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Address" title="Enter Valid Address" id="address" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row mb-2 mr-5 ml-5">
+                    <div class="col">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Mobile</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Mobile Number" pattern="[0-9]+" title="Enter Valid Mobile Number" id="mobile">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="new-seller-progress" class="col m-font"></div>
+                <button type="submit" class="btn btn-success col-sm-3">Save</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<div class="modal fade" id="alertModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="info-modal-header"></h4>
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="info-model-message"></p>
+            </div>
+            <div class="modal-footer" id="info-modal-footer">
+                <button class="btn btn-success" data-dismiss="modal" id="info-modal-action-button"
+                        type="button"></button>
+                <button class="btn btn-primary" data-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="purchase_template" class="d-none">
     <div class="form-row mb-4">
         <div class="col">
@@ -230,45 +295,21 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="alertModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="info-modal-header"></h4>
-                <button class="close" data-dismiss="modal" type="button">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="info-model-message"></p>
-            </div>
-            <div class="modal-footer" id="info-modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" id="info-modal-action-button"
-                        type="button"></button>
-                <button class="btn btn-primary" data-dismiss="modal" type="button">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!--<script>
-    let table = document.getElementById("purchase_detail");
-    let messages={
-        error:"<i style='color: #db3000' class=\"fa fa-times-circle-o fa-lg\" aria-hidden=\"true\"></i> Can't Save The Entry! ",
-        success:"<i style='color: #4cae4c' class=\"fa fa-check-circle-o fa-lg\" aria-hidden=\"true\"></i> Entry Saved Successfully! "
-    }
-    let thisPage='cold_kharid';
-
+<script>
+    //UI Handling Functions
     $(document).ready(function() {
         setModalProperties();
-        followPreSetInstruction();
     });
-
     function addRow() {
+        let table = document.getElementById("purchase_detail");
         let template = document.createElement('template');
         template.innerHTML = document.getElementById("purchase_template").innerHTML;
         let node = template.content.cloneNode(true);
         table.appendChild(node);
     }
     function removeRow(child){
+        let table = document.getElementById("purchase_detail");
         table.removeChild(child.parentElement.parentElement);
     }
     function validateDropDown(input){
@@ -301,93 +342,87 @@
             label.innerHTML='Choose Files (Max 5 Files)';
         }
     }
-    function getBuyerMobile(){
-        let dataList=document.getElementById('buyer-mobile');
-        let options="";
-        if($('#buyer-name-input').val()==='Nem Singh'){
-            options+="<option value='9719814140'>";
-        }
-        else if($('#buyer-name-input').val()==='Mahesh Chand'){
-            options+="<option value='9675234150'><option value='9675444150'>";
-        }
-        dataList.innerHTML=options;
-    }
-    function generateFieldData(sellerName){
 
-        let mobileDataList=document.getElementById('seller-mobile');
-        let sellerID=document.getElementById('seller-id');
-        let nameDataList=document.getElementById('seller-name');
-        let option=nameDataList.options.namedItem(sellerName.value);
-        let options="";
-
-        if(option){
-            let data = JSON.parse(option.id);
-            sellerID.value=data.id;
-            for(let number of data.contact)
-                options+="<option value="+number+">";
-        }else
-            sellerID.value='';
-        mobileDataList.innerHTML=options;
-    }
     function setModalProperties(){
-        $("#myModal").on('show.bs.modal', function () {
-            document.getElementById("new-cold-form").reset();
-            document.getElementById("add-cold-btn").innerHTML="Save";
-            document.getElementById("new-cold-error").innerHTML="";
+        $("#newCold_Modal").on('show.bs.modal', function () {
+            document.getElementById("newCold_Form").reset();
+            document.getElementById("new-cold-progress").innerHTML="";
         });
-        $("#myModal").on('hidden.bs.modal', function () {
+        $("#newCold_Modal").on('hidden.bs.modal', function () {
             document.getElementById("cold-name-list").selectedIndex=0;
         });
+
+        $("#newSeller_Modal").on('show.bs.modal', function () {
+            document.getElementById("newSeller_Form").reset();
+            document.getElementById("new-seller-progress").innerHTML="";
+        });
+        $("#newSeller_Modal").on('hidden.bs.modal', function () {
+            document.getElementById("seller-name-list").selectedIndex=0;
+        });
+
     }
-    function showColdStoreInsertModal(option){
-        if(option.value==='add')
-            $("#myModal").modal('show');
+    function showModal(option, modalId){
+        if(option==='add')
+            $(modalId).modal('show');
     }
 </script>
 
 <script>
-    function saveColdStoreData(){
-        document.getElementById('add-cold-btn').innerHTML=
-            "<span class=\"spinner-border spinner-border-sm\"></span>&nbsp; Saving...";
-
-        $.ajax('/db/new_cold', {
+    //Ajax calls to APIs
+    function saveNewColdDetails(){
+        document.getElementById('new-cold-progress').innerHTML="<i class='fa fa-2x fa-spinner fa-pulse'></i>";
+        $.ajax('/api/save_new_cold', {
             type: 'POST',
             data: {
                 name: $('#cold-name').val(),
                 bag: $('#bag').val(),
-                due: $('#due').val()
+                due:$('#due').val()
             },
             success: function (data, status, xhr) {
-                if(jQuery.isEmptyObject(data)){
-                    document.getElementById("add-cold-btn").innerHTML="Save";
-                    document.getElementById("new-cold-error").innerHTML="Error! New Cold Details Not Saved."
-                }
-                else {
-                    let nameList=document.getElementById('cold-name-list');
-                    let options="<option disabled selected>Select Cold Storage Name</option>";
-                    for(let x of data){
-                        options+="<option value="+x.name+">"+x.name+"</option>";
-                    }
-                    options+="<option value=\"add\">Add New Cold Store</option>";
-                    nameList.innerHTML=options;
-                    $("#myModal").modal('hide');
-                }
+                let nameList=document.getElementById('cold-name-list');
+                let newOption = document.createElement("option");
+                newOption.value=data.insertedId;
+                newOption.innerHTML = data.name;
+                nameList.insertBefore(newOption, nameList.lastElementChild);
+                $("#newCold_Modal").modal('hide');
             },
             error: function (jqXhr, textStatus, errorMessage) {
-                window.alert("Network Issue: Save New Cold Details!\n"+errorMessage);
-                location.reload();
+                document.getElementById('new-cold-progress').innerHTML=errorMessage+" : Can't Save Cold Details!";
             }
         });
-        return false;
     }
+
+    function saveNewSellerDetails(){
+        document.getElementById('new-seller-progress').innerHTML="<i class='fa fa-2x fa-spinner fa-pulse'></i>";
+        $.ajax('/api/save_new_seller', {
+            type: 'POST',
+            data: {
+                name: $('#seller-name').val(),
+                address: $('#address').val(),
+                mobile:$('#mobile').val()
+            },
+            success: function (data, status, xhr) {
+                let nameList=document.getElementById('seller-name-list');
+                let newOption = document.createElement("option");
+                newOption.value=data.insertedId;
+                newOption.innerHTML = data.name+" "+data.address+" "+data.mobile;
+                nameList.insertBefore(newOption, nameList.lastElementChild);
+                $("#newSeller_Modal").modal('hide');
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                document.getElementById('new-seller-progress').innerHTML=errorMessage+" : Can't Save Seller Details!";
+            }
+        });
+    }
+
 </script>
 
 <script>
-    var x = document.getElementById("cold-name-list");
-    var newOption=document.createElement("OPTION");
-    newOption.value="ids";
-    newOption.innerHTML = "Newly Added";
-    x.insertBefore(newOption, x.childNodes[2]);
-</script>-->
+let messages={
+        error:"<i style='color: #db3000' class=\"fa fa-times-circle-o fa-lg\" aria-hidden=\"true\"></i> Can't Save The Record! ",
+        success:"<i style='color: #4cae4c' class=\"fa fa-check-circle-o fa-lg\" aria-hidden=\"true\"></i> Record Saved Successfully! "
+    }
+
+</script>
 
 </html>
