@@ -1,26 +1,50 @@
-<div class="container" style="padding:40px; background-color: #ffffff; box-shadow: 1px 1px 5px #acacac; border-radius: 10px; font-family: Gadugi, Arial, sans-serif">
-    <form action="/test" method="get" enctype="multipart/form-data">
+<style>
+    .container{
+        padding:40px;
+        background-color: #ffffff;
+        box-shadow: 1px 1px 5px #acacac;
+        border-radius: 10px;
+        font-family: Gadugi, Arial, sans-serif;
+    }
+
+    @media screen and (max-width: 600px) {
+        .input-group-prepend{
+            display: none;
+        }
+        .form-row .col .input-group .form-control, .form-row .col-sm-4 .input-group .form-control{
+            min-width: 100px;
+            border-radius: 5px;
+            margin-bottom: 4px;
+        }
+        .col-sm-2{
+            margin-top: 4px;
+        }
+    }
+</style>
+<div class="container">
+    <form action="#" id="cold_kharid_form" onsubmit="saveColdKharidDetails()">
         <div class="form-row mb-4">
-            <div class="col">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Cold Storage</span>
-                    </div>
-                    <select name="in_cold_id" id="cold-name-list" class="form-control" oninput="showModal(this.value, '#newCold_Modal')">
-                        <option disabled selected>Select Cold Store Name</option>
-                        {{#coldStore}}
-                        <option value="{{_id}}">{{name}}</option>
-                        {{/coldStore}}
-                        <option value="add">Add New Cold Store</option>
-                    </select>
-                </div>
-            </div>
             <div class="col-sm-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Date</span>
                     </div>
-                    <input type="date" class="form-control" name="in_date" required>
+                    <input type="date" class="form-control" placeholder="Date" id="date-picker" required>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Cold Storage</span>
+                    </div>
+                    <select id="cold-name-list" class="form-control" oninput="showModal(this.value, '#newCold_Modal')">
+                        <option disabled selected>Select Cold Store Name</option>
+                        <option>Test</option>
+                        {{#coldStore}}
+                        <option value="{{_id}}">{{name}}</option>
+                        {{/coldStore}}
+                        <option value="add">Add New Cold Store</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -30,8 +54,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Seller Name</span>
                     </div>
-                    <select name="in_seller_id" id="seller-name-list" class="form-control" oninput="showModal(this.value, '#newSeller_Modal')">
+                    <select id="seller-name-list" class="form-control" oninput="showModal(this.value, '#newSeller_Modal')">
                         <option disabled selected>Select Seller Name</option>
+                        <option>Test</option>
                         {{#seller}}
                         <option value="{{_id}}">{{name}}</option>
                         {{/seller}}
@@ -44,12 +69,13 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Buyer Name</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Buyer Name & Address" list="buyer-name" onfocusout="getBuyerMobile()" id="buyer-name-input" name="in_buyer_name" required>
+                    <select id="buyer-name-list" class="form-control">
+                        <option disabled selected>Select Buyer Name</option>
+                        <option>Test</option>
+                        <option value="Nem Singh">Nem Singh</option>
+                        <option value="Mahesh Chand">Mahesh Chand</option>
+                    </select>
                 </div>
-                <datalist id="buyer-name">
-                    <option value="Nem Singh">
-                    <option value="Mahesh Chand">
-                </datalist>
             </div>
         </div>
         <hr>
@@ -60,7 +86,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Lot No.</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Lot Number" name="in_lot" required>
+                        <input type="text" class="form-control" placeholder="Lot Number" name="lot-number" required>
                     </div>
                 </div>
                 <div class="col">
@@ -68,7 +94,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Type</span>
                         </div>
-                        <select class="form-control" name="in_size">
+                        <select class="form-control" name="potato-size">
                             <option disabled selected>Potato Size</option>
                             <option value="Gulla">Gulla</option>
                             <option value="Mota">Mota</option>
@@ -81,7 +107,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Packets</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Bags" name="in_bags" required pattern="[0-9]+" title="Enter Number Of Packets!">
+                        <input type="text" class="form-control" placeholder="Bags" required pattern="[0-9]+" title="Enter Number Of Packets!" name="bags">
                     </div>
                 </div>
                 <div class="col">
@@ -89,7 +115,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Rate</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Rate" name="in_rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
+                        <input type="text" class="form-control control-sm" placeholder="Rate" name="rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
                     </div>
                 </div>
                 <div class="col">
@@ -97,8 +123,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Tol</span>
                         </div>
-                        <select class="form-control" name="in_tol">
-                            <option disabled selected>Select Tol</option>
+                        <select class="form-control control-sm" name="tol">
+                            <option disabled selected>Tol</option>
                             <option value="52.5">52.5 Kg/Bag</option>
                             <option value="52.3">52.3 Kg/Bag</option>
                             <option value="52.7">52.7 Kg/Bag</option>
@@ -110,6 +136,7 @@
                 </div>
             </div>
         </div>
+        <hr>
         <div class="form-row">
             <div class="col">
                 <div class="custom-file">
@@ -238,14 +265,14 @@
     </div>
 </div>
 
-<div id="purchase_template" class="d-none">
+<template>
     <div class="form-row mb-4">
         <div class="col">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Lot No.</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Lot Number" name="in_lot" required>
+                <input type="text" class="form-control" placeholder="Lot Number" name="lot-number" required>
             </div>
         </div>
         <div class="col">
@@ -253,7 +280,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Type</span>
                 </div>
-                <select class="form-control" name="in_size">
+                <select class="form-control" name="potato-size">
                     <option disabled selected>Potato Size</option>
                     <option value="Gulla">Gulla</option>
                     <option value="Mota">Mota</option>
@@ -266,7 +293,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Packets</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Bags" name="in_bags" required pattern="[0-9]+" title="Enter Number Of Packets!">
+                <input type="text" class="form-control" placeholder="Bags" name="bags" required pattern="[0-9]+" title="Enter Number Of Packets!">
             </div>
         </div>
         <div class="col">
@@ -274,7 +301,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Rate</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Rate" name="in_rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
+                <input type="text" class="form-control" placeholder="Rate" name="rate" required pattern="[-+]?[0-9]*[.,]?[0-9]+" title="Rate Not Valid!">
             </div>
         </div>
         <div class="col">
@@ -282,8 +309,8 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Tol</span>
                 </div>
-                <select class="form-control" name="in_tol">
-                    <option disabled selected>Select Tol</option>
+                <select class="form-control" name="tol">
+                    <option disabled selected>Tol</option>
                     <option value="52.5">52.5 Kg/Bag</option>
                     <option value="52.3">52.3 Kg/Bag</option>
                     <option value="52.7">52.7 Kg/Bag</option>
@@ -294,17 +321,18 @@
             <button class="btn btn-primary" style="width: 2.5em" onclick="removeRow(this)">-</button>
         </div>
     </div>
-</div>
+</template>
 
 <script>
     //UI Handling Functions
     $(document).ready(function() {
+        document.querySelector("#date-picker").valueAsDate = new Date();
         setModalProperties();
     });
+
     function addRow() {
         let table = document.getElementById("purchase_detail");
-        let template = document.createElement('template');
-        template.innerHTML = document.getElementById("purchase_template").innerHTML;
+        let template = document.getElementsByTagName("template")[0];
         let node = template.content.cloneNode(true);
         table.appendChild(node);
     }
@@ -312,22 +340,32 @@
         let table = document.getElementById("purchase_detail");
         table.removeChild(child.parentElement.parentElement);
     }
-    function validateDropDown(input){
-        if(input.selectedIndex==0 || input.selectedIndex==-1)
-            input.setCustomValidity('Please Select A Valid Option!');
-        else
-            input.setCustomValidity('');
+    function validateDropDowns(elements){
+        for (const x of elements) {
+            if(x.selectedIndex===0 || x.selectedIndex===-1) {
+                x.setCustomValidity('Please Select A Valid Option!');
+                break;
+            }
+            else
+                x.setCustomValidity('');
+        }
+
     }
     function applyValidation(){
         let coldList=document.getElementById("cold-name-list");
-        let pType=document.getElementById("type");
-        let tol=document.getElementById("tol");
+        let sellerList = document.getElementById("seller-name-list");
+        let buyerList=document.getElementById("buyer-name-list");
+        let pSize=document.getElementsByName("potato-size")
+        let tol=document.getElementsByName("tol");
+
+        let elements=[coldList, sellerList, buyerList];
+        for (let i=0; i<pSize.length; i++){
+            elements.push(pSize[i]);
+            elements.push(tol[i]);
+        }
+        validateDropDowns(elements);
+
         let filePicker=document.getElementById("customFile");
-
-        validateDropDown(coldList);
-        validateDropDown(pType);
-        validateDropDown(tol);
-
         if(filePicker.files.length>5)
             filePicker.setCustomValidity('Maximum 5 Files Allowed!');
         else
@@ -415,12 +453,7 @@
         });
     }
 
-</script>
-
-<script>
-let messages={
-        error:"<i style='color: #db3000' class=\"fa fa-times-circle-o fa-lg\" aria-hidden=\"true\"></i> Can't Save The Record! ",
-        success:"<i style='color: #4cae4c' class=\"fa fa-check-circle-o fa-lg\" aria-hidden=\"true\"></i> Record Saved Successfully! "
+    function saveColdKharidDetails() {
     }
 
 </script>
