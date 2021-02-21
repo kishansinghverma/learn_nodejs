@@ -6,7 +6,6 @@
         border-radius: 10px;
         font-family: Gadugi, Arial, sans-serif;
     }
-
     @media screen and (max-width: 600px) {
         .input-group-prepend{
             display: none;
@@ -22,7 +21,7 @@
     }
 </style>
 <div class="container">
-    <form action="#" id="cold_kharid_form" onsubmit="saveColdKharidDetails()">
+    <form action="#" id="cold_kharid_form" onsubmit="return saveColdKharidDetails()">
         <div class="form-row mb-4">
             <div class="col-sm-4">
                 <div class="input-group">
@@ -39,7 +38,6 @@
                     </div>
                     <select id="cold-name-list" class="form-control" oninput="showModal(this.value, '#newCold_Modal')">
                         <option disabled selected>Select Cold Store Name</option>
-                        <option>Test</option>
                         {{#coldStore}}
                         <option value="{{_id}}">{{name}}</option>
                         {{/coldStore}}
@@ -56,9 +54,8 @@
                     </div>
                     <select id="seller-name-list" class="form-control" oninput="showModal(this.value, '#newSeller_Modal')">
                         <option disabled selected>Select Seller Name</option>
-                        <option>Test</option>
                         {{#seller}}
-                        <option value="{{_id}}">{{name}}</option>
+                        <option value="{{_id}}">{{name}} {{address}} {{mobile}}</option>
                         {{/seller}}
                         <option value="add">Add New Seller</option>
                     </select>
@@ -71,7 +68,6 @@
                     </div>
                     <select id="buyer-name-list" class="form-control">
                         <option disabled selected>Select Buyer Name</option>
-                        <option>Test</option>
                         <option value="Nem Singh">Nem Singh</option>
                         <option value="Mahesh Chand">Mahesh Chand</option>
                     </select>
@@ -151,7 +147,7 @@
     </form>
 </div>
 <div class="modal fade" id="newCold_Modal">
-    <form id="newCold_Form" action="#" onsubmit="saveNewColdDetails()">
+    <form id="newCold_Form" action="#" onsubmit="return saveNewColdDetails()">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -198,8 +194,8 @@
     </div>
     </form>
 </div>
-<div class="modal fade" id="newSeller_Modal" onsubmit="saveNewSellerDetails()">
-    <form action="#" id="newSeller_Form">
+<div class="modal fade" id="newSeller_Modal">
+    <form action="#" id="newSeller_Form" onsubmit="return saveNewSellerDetails()">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -246,20 +242,18 @@
     </div>
     </form>
 </div>
-<div class="modal fade" id="alertModal" role="dialog">
+<div class="modal fade" id="alertModal" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="info-modal-header"></h4>
-                <button class="close" data-dismiss="modal" type="button">&times;</button>
+                <h4 class="modal-title" id="info-modal-header">Saving Record...</h4>
             </div>
             <div class="modal-body">
-                <p id="info-model-message"></p>
+                <p id="alert-model-message" style="text-align: center"></p>
             </div>
             <div class="modal-footer" id="info-modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" id="info-modal-action-button"
-                        type="button"></button>
-                <button class="btn btn-primary" data-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-success" type="button" id="alert-view-btn">View</button>
+                <button class="btn btn-primary" data-dismiss="modal" type="button" id="alert-close-btn">Close</button>
             </div>
         </div>
     </div>
@@ -428,6 +422,7 @@
                 document.getElementById('new-cold-progress').innerHTML=errorMessage+" : Can't Save Cold Details!";
             }
         });
+        return false;
     }
 
     function saveNewSellerDetails(){
@@ -451,9 +446,75 @@
                 document.getElementById('new-seller-progress').innerHTML=errorMessage+" : Can't Save Seller Details!";
             }
         });
+        return false;
     }
 
     function saveColdKharidDetails() {
+        $('#alert-close-btn').attr("disabled", "disabled");
+        $('#alert-view-btn').attr("disabled", "disabled");
+        $('#alertModal').modal('show');
+
+        let image_ids=[];
+        if($('#customFile')[0].files.length>0){
+            $('#alert-model-message')[0].innerHTML = "<i class='fa fa-3x fa-spinner fa-pulse'></i><br><br>Saving Images...";
+            let data = new FormData();
+            for (let x of document.getElementById('customFile').files)
+                data.append('files', x);
+
+            $.ajax('/api/image', {
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (data, status, xhr) {
+                    for(let i=0; i<data.insertedCount; i++)
+                        image_ids.push(data.insertedIds[i]);
+                    saveColdKharidData(image_ids);
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    $('#alert-model-message')[0].innerHTML = "Can't Save Image Data!";
+                }
+            });
+        }
+        else
+            saveColdKharidData([]);
+
+        $('#alert-close-btn').removeAttr('disabled');
+        return false;
+    }
+    function saveColdKharidData(image_ids){
+        $('#alert-model-message')[0].innerHTML = "<i class='fa fa-3x fa-spinner fa-pulse'></i><br><br>Saving Kharid Data...";
+
+        $.ajax('/api/save_cold_kharid', {
+            type: 'POST',
+            data: {
+                date: $('#date-picker').val(),
+                cold_id: $('#cold-name-list').val(),
+                seller_id:$('#seller-name-list').val(),
+                buyer_name: $('#buyer-name-list').val(),
+                lot: Array.from($('[name=lot-number]')).map(x=>{return x.value}),
+                size: Array.from($('[name=potato-size]')).map(x=>{return x.value}),
+                bags: Array.from($('[name=bags]')).map(x=>{return x.value}),
+                rate: Array.from($('[name=rate]')).map(x=>{return x.value}),
+                tol: Array.from($('[name=tol]')).map(x=>{return x.value}),
+                image_ids: image_ids
+            },
+            success: function (data, status, xhr) {
+                console.log(JSON.stringify(data));
+                $('#alert-model-message')[0].innerHTML = "Saved Successfully!";
+                $('#alert-view-btn').attr("onclick", "location.href='/api/display_cold_kharid?id="+data.parentResult.insertedId+"'");
+                $('#alert-view-btn').removeAttr('disabled');
+                resetForm();
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                $('#alert-model-message')[0].innerHTML = "Can't Save Cold Kharid Details!";
+            }
+        });
+    }
+    function resetForm(){
+        $('#cold_kharid_form')[0].reset();
+        document.querySelector("#date-picker").valueAsDate = new Date();
+        setFileInputText();
     }
 
 </script>

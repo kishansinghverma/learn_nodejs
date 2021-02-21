@@ -1,14 +1,37 @@
 const multer = require('multer');
-const mongo=require('mongodb');
 const fs = require('fs');
 const database=require('./databaseManager');
 const util = require('./utility');
 
 async function getColdStoreNames(){
-    const data=await database.getList('cold_store', {}, {_id:0, name:1});
+    const data=await database.getList('cold_store', {}, {name:1});
     if(data!==null)
         return data;
     return {};
+}
+async function getColdKharidData(documentId){
+    let _id;
+    if(util.isValid(documentId)) {
+        _id = util.getObjectId(documentId);
+    }
+    else
+        return {statusCode:400};
+
+    let parameters=[
+        {$lookup:{from:"cold_store", localField:"cold_id", foreignField:"_id", as:"cold_store"}},
+        {$lookup:{from:"seller", localField:"seller_id", foreignField:"_id", as:"seller"}},
+        {$lookup:{from:"deals", localField:"child_ids", foreignField:"_id", as:"deals"}},
+        {$match:{_id:_id}},
+        {$project:{cold_id:0, seller_id:0, child_ids:0, cold_store:{_id:0, bag:0, due:0}, seller:{_id:0, txn:0}}}
+        ];
+    const data=await database.getAggregatedDocument('cold_kharid', parameters);
+    if(data!==null)
+        if (util.len(data)>0)
+            return data;
+        else
+            return {statusCode: 404};
+
+    return {statusCode:500};
 }
 async function saveColdStoreDetails(name, bag, due){
     let queryDocument=await database.getList('cold_store', {name:name});
@@ -21,8 +44,8 @@ async function saveColdStoreDetails(name, bag, due){
         return {"insertedId" : res.insertedId, "name" : name};
     return {statusCode:500};
 }
-async function getSellerDetails(){
-    const data=await database.getList('seller', {}, {});
+async function getSellerNames(){
+    const data=await database.getList('seller', {}, {name:1, address:1, mobile:1});
     if(data!==null)
         return data;
     return {};
@@ -35,13 +58,14 @@ async function saveImagesData(documents){
 }
 async function getImageData(imageId){
     let _id;
-    try{_id=new mongo.ObjectId(imageId);}
-    catch (e){return {};}
+    if(util.isValid(imageId))
+        _id = util.getObjectId(imageId);
+    else return {statusCode:400};
 
     let data=await database.getDocument('images', {'_id':_id}, {})
     if(data!==null)
         return data;
-    return {};
+    return {statusCode:500};
 }
 async function saveSellerDetails(formData){
     let queryDocument=await database.getList('seller', {name: formData.name, mobile: formData.mobile, address: formData.address});
@@ -65,19 +89,28 @@ async function saveSellerDetails(formData){
     }
     return {statusCode:500};
 }
-async function updateSellerContact(sellerId, number){
-    let query={_id:new mongo.ObjectID(sellerId)};
-    let newVal={$addToSet: {contact:number}};
-    await database.updateDocument('seller', query, newVal);
-}
 async function saveColdKharidData(formData){
+    //Preparing ObjectIds
+    let cold_id, seller_id, image_ids=[];
+    if(util.isValid(formData.cold_id) && util.isValid(formData.seller_id)) {
+        cold_id = util.getObjectId(formData.cold_id);
+        seller_id = util.getObjectId(formData.seller_id);
+    }
+    else
+        return {statusCode:400};
+
+    if(formData.image_ids !== undefined)
+        for (let x of formData.image_ids)
+            if(util.isValid(x))
+                image_ids.push(util.getObjectId(x));
+
     //Creating Header details
     let parentDocument = {
-        "cold_id": formData.in_cold_id,
-        "date": formData.in_date,
-        "seller_id": formData.in_seller_id,
-        "buyer_name": formData.in_buyer_name,
-        "image_id": formData.in_image_id
+        "cold_id": cold_id,
+        "date": formData.date,
+        "seller_id": seller_id,
+        "buyer_name": formData.buyer_name,
+        "image_ids": image_ids
     };
 
     //Saving header document
@@ -88,30 +121,15 @@ async function saveColdKharidData(formData){
         let childDocuments = [];
 
         //Checking if there are multiple deals associated in form
-        if(Array.isArray(formData.in_lot)){
-            //Caching each deal individually
-            for (let i = 0; i < formData.in_lot.length; i++) {
-                let childDocument={
-                    "lot_no":formData.in_lot[i],
-                    "size":formData.in_size[i],
-                    "bags":formData.in_bags[i],
-                    "rate":formData.in_rate[i],
-                    "tol":formData.in_tol[i],
-                    "parent":"cold_kharid",
-                    "parent_id":parentResult.insertedId
-                }
-                childDocuments.push(childDocument);
-            }
-        }
-        else {
-            let childDocument={
-                "lot_no":formData.in_lot,
-                "size":formData.in_size,
-                "bags":formData.in_bags,
-                "rate":formData.in_rate,
-                "tol":formData.in_tol,
-                "parent":"cold_kharid",
-                "parent_id":parentResult.insertedId
+        for (let i = 0; i < formData.lot.length; i++) {
+            let childDocument = {
+                "lot": formData.lot[i],
+                "size": formData.size[i],
+                "bags": formData.bags[i],
+                "rate": formData.rate[i],
+                "tol": formData.tol[i],
+                "parent": "cold_kharid",
+                "parent_id": parentResult.insertedId
             }
             childDocuments.push(childDocument);
         }
@@ -132,8 +150,7 @@ async function saveColdKharidData(formData){
 
             //Checking if child Ids placed in Parent document
             if (finalResult !== null && finalResult.modifiedCount > 0) {
-                //TODO: Customize response
-                return {"parent": parentResult, "child": childResult};
+                return {parentResult};
             } else {
                 //Delete parent record
                 await database.deleteDocument("cold_kharid", {_id: parentResult.insertedId});
@@ -148,7 +165,7 @@ async function saveColdKharidData(formData){
             await database.deleteDocument("cold_kharid", {_id: parentResult.insertedId});
         }
     }
-    return {};
+    return {statusCode:500};
 }
 
 let storage = multer.diskStorage({
@@ -195,8 +212,9 @@ module.exports={
     saveSellerDetails,
     saveColdKharidData,
     saveColdStoreDetails,
+    getColdKharidData,
     getColdStoreNames,
-    getSellerDetails,
+    getSellerNames,
     getImageData,
     saveImages
 }

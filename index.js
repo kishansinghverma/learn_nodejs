@@ -20,12 +20,22 @@ app.get('/dashboard', (req, res)=>{
     res.render('dashboard.html');
 });
 app.get('/cold_kharid',async (req, res)=>{
-    res.render('cold_kharid.html');
+    const data = {
+        coldStore: await controller.getColdStoreNames(),
+        seller: await controller.getSellerNames()
+    };
+    res.render('cold_kharid.html', data);
 })
 app.get('/kisan_kharid', (req, res)=>{
     res.end('Working');
 });
 app.get('/self_entry', (req, res)=>{
+    res.end('Working');
+});
+app.get('/display_cold_kharid', (req, res)=>{
+    res.end('Working');
+});
+app.get('/api/display_cold_kharid', (req, res)=>{
     res.end('Working');
 });
 app.post('/api/save_new_cold', async (req, res)=>{
@@ -50,11 +60,13 @@ app.post('/api/save_new_seller', async (req, res)=>{
     else
         res.status(400).end();
 })
-app.post('/api/cold_kharid', async (req, res)=>{
-    if(util.verifyInputs([req.body.in_cold_id, req.body.in_seller_id])){
+app.post('/api/save_cold_kharid', async (req, res)=>{
+    if(util.verifyInputs([req.body.date, req.body.cold_id, req.body.seller_id, req.body.buyer_name]) &&
+        util.verifyArrayInputs([req.body.lot, req.body.size, req.body.bags, req.body.rate, req.body.tol])){
+
         let result = await controller.saveColdKharidData(req.body);
-        if(util.isEmpty(result))
-            res.status(500).end();
+        if(result.statusCode !== undefined)
+            res.status(result.statusCode).end();
         else
             res.json(result);
     }
@@ -63,16 +75,16 @@ app.post('/api/cold_kharid', async (req, res)=>{
 });
 
 app.post('/api/image', (req, res)=> {
-    let upload = controller.upload.array('in_files', 5);
+    let upload = controller.upload.array('files', 5);
     upload(req, res, async (err) => {
         if (err) {
-            res.status(403).end();
+            res.status(405).end();
         }
         else {
             if(req.files !== undefined) {
                 let result = await controller.saveImages(req.files);
-                if (util.isEmpty(result))
-                    res.status(500).end();
+                if (result.statusCode !== undefined)
+                    res.status(result.statusCode).end();
                 else
                     res.json(result);
             }
@@ -82,7 +94,7 @@ app.post('/api/image', (req, res)=> {
     })
 });
 app.get('/api/image', async (req, res)=>{
-    if(req.query.id != null) {
+    if(util.verifyInputs([req.query.id])) {
         let result = await controller.getImageData(req.query.id);
         if (result.image != null) {
             res.contentType('image/jpeg');
@@ -94,22 +106,40 @@ app.get('/api/image', async (req, res)=>{
     else
         res.status(400).end();
 });
+app.get('/api/cold_kharid_data', async (req, res)=>{
+    if(util.verifyInputs([req.query.id])) {
+        let result = await controller.getColdKharidData(req.query.id);
+        if(result.statusCode !== undefined)
+            res.status(result.statusCode).end();
+        else
+            res.json(result);
+    }
+    else
+        res.status(400).end();
+});
 
 app.get('/error', (req, res)=>{
-    if(req.query.msg===undefined || req.query.msg==='')
-        req.query.msg="Unknown Error!";
-    res.render('error_page.html', {error:req.query.msg});
+    let error = "Unknown Error!";
+    if(util.verifyInputs([req.query.msg]))
+        error = req.query.msg;
+    res.render('error_page.html', {error:error});
 });
+
+app.get('/test', async (req, res)=>{
+    res.render('test.html');
+});
+
+app.post('/test', async (req, res)=>{
+    console.log("Debug Run Test");
+    console.log(JSON.stringify(req))
+    res.end();
+});
+
 app.get('*', (req, res)=>{
     res.redirect('/error?msg=Invalid Request Type! (GET)')
 });
 app.post('*', (req, res)=>{
     res.redirect('/error?msg=Invalid Request Type! (POST)')
-});
-
-app.post('/test', async (req, res)=>{
-    console.log(JSON.stringify(req.body))
-    res.end();
 });
 
 app.listen(8000);

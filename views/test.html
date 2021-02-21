@@ -2,13 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta content="width=device-width initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        body{
+            font-family: Gadugi, Arial, sans-serif
+        }
+        .modal-label{
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0px 0px 2px 0px;
+            padding: 5px 5px 5px 5px;
+
+        }
+        .modal-text{
+            font-size: 15px;
+            padding: 0px 5px 0px 5px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+
+        }
+        .info .col-sm-2{
+            max-width: 20%;
+            min-width: 20%;
+        }
+
+        .info.row {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .modal-text:hover{
+            overflow: visible;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        @media screen and (max-width: 600px) {
+            .modal-label{
+                font-size: 11px;
+            }
+            .modal-text{
+                font-size: 10px;
+            }
+            .info .col-sm-2{
+                max-width: 19%;
+                min-width: 19%;
+            }
+
+            .col-sm-2, .col-sm-4{
+                display: inline-block;
+                padding: 0px 2px 0px 2px;
+            }
+            .meta .col-sm-2, .meta .col-sm-4{
+                max-width: 49%;
+                min-width: 49%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <form method="post" action="/test" enctype="multipart/form-data">
-        <input type="file" name="in-files" multiple accept="image/*">
-        <input type="text" name="name">
-        <input type="submit" value="Go">
-    </form>
+<div id="display-details-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Cold Kharid</h4>
+            </div>
+            <div class="modal-body">
+                    <div class="row meta">
+                        <div class="col-sm-2">
+                            <div class="modal-label">Date:</div>
+                            <div class="modal-text">23/08/1997</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="modal-label">Cold Store:</div>
+                            <div class="modal-text">Maa Bhadrakali Cold Storage</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="modal-label">Bought From</div>
+                            <div class="modal-text">Mahesh Chand, Sahpau</div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="modal-label">Bought By:</div>
+                            <div class="modal-text">Mahesh Chand</div>
+                        </div>
+                    </div>
+                <hr>
+                <div class="row info">
+                    <div class="col-sm-2">
+                        <div class="modal-label">Lot No:</div>
+                        <div class="modal-text">15/190</div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="modal-label">Size:</div>
+                        <div class="modal-text">Mota</div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="modal-label">Bags:</div>
+                        <div class="modal-text">150</div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="modal-label">Rate:</div>
+                        <div class="modal-text">750</div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="modal-label">Tol:</div>
+                        <div class="modal-text">52</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    $('#display-details-modal').modal('show');
+</script>
 </html>

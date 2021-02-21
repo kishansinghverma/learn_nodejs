@@ -37,6 +37,23 @@ const getDocument = async (collectionName, query, projection) => {
         return null;
     }
 };
+const getAggregatedDocument = async (collectionName, parameters) => {
+    let client;
+    let data;
+
+    try {
+        client = await MongoClient.connect(url, params);
+        const db = client.db();
+        const collection = db.collection(collectionName);
+        data = await collection.aggregate(parameters).toArray();
+        await client.close();
+        return data;
+
+    } catch (err) {
+        console.log(err.stack);
+        return null;
+    }
+};
 const insertDocument = async (collectionName, document) => {
     let client;
     let res;
@@ -126,6 +143,7 @@ const deleteDocuments = async (collectionName, query) => {
 module.exports={
     getList,
     getDocument,
+    getAggregatedDocument,
     insertDocument,
     insertDocuments,
     updateDocument,

@@ -1,7 +1,9 @@
-var db=require('./databaseManager');
-var util=require('./utility');
-const mustacheExpress=require('mustache-express');
+const db=require('./databaseManager');
+const util=require('./utility');
+const controller=require('./controller');
 
-data={"arr":[1,2,3,"ki"]}
-console.log(util.len(data))
-console.log(data.arr.length);
+async function test(){
+    let data = await controller.getColdKharidData("60218cbc08582835c4d8b4a4");
+    console.log(JSON.stringify(data));
+}
+test();
