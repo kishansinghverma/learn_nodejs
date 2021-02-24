@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width initial-scale=1.0" name="viewport">
+    <link href="/css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -13,33 +14,53 @@
         .modal-label{
             font-weight: bold;
             font-size: 16px;
-            margin: 0px 0px 2px 0px;
-            padding: 5px 5px 5px 5px;
-
         }
         .modal-text{
             font-size: 15px;
-            padding: 0px 5px 0px 5px;
+        }
+        .modal-text, .modal-label{
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-
         }
         .info .col-sm-2{
             max-width: 20%;
             min-width: 20%;
         }
 
-        .info.row {
-            margin-bottom: 10px;
-            text-align: center;
+        .row.info{
+            font-size: 0;
+            margin-bottom: 2px;
         }
+
+        .row.image{
+            margin-bottom: 2px;
+        }
+        .btn-img{
+            padding: 0;
+            border: 0;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            font-size: 20px;
+            border-radius: 15px;
+        }
+
+        .row.info:nth-child(even){
+            background-color: #f6f6f6;
+        }
+
         .modal-text:hover{
             overflow: visible;
             white-space: normal;
             word-break: break-word;
         }
-
+        .btn-img:focus{
+            outline: none;
+        }
+        .btn-img:hover{
+            box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+        }
         @media screen and (max-width: 600px) {
             .modal-label{
                 font-size: 11px;
@@ -47,14 +68,12 @@
             .modal-text{
                 font-size: 10px;
             }
-            .info .col-sm-2{
-                max-width: 19%;
-                min-width: 19%;
-            }
-
-            .col-sm-2, .col-sm-4{
+            .col-sm-2, .col-sm-4, .col-sm-1{
                 display: inline-block;
-                padding: 0px 2px 0px 2px;
+            }
+            .info .col-sm-2{
+                max-width: 20%;
+                min-width: 20%;
             }
             .meta .col-sm-2, .meta .col-sm-4{
                 max-width: 49%;
@@ -71,47 +90,32 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Cold Kharid</h4>
             </div>
-            <div class="modal-body">
-                    <div class="row meta">
-                        <div class="col-sm-2">
-                            <div class="modal-label">Date:</div>
-                            <div class="modal-text">23/08/1997</div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="modal-label">Cold Store:</div>
-                            <div class="modal-text">Maa Bhadrakali Cold Storage</div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="modal-label">Bought From</div>
-                            <div class="modal-text">Mahesh Chand, Sahpau</div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="modal-label">Bought By:</div>
-                            <div class="modal-text">Mahesh Chand</div>
-                        </div>
+            <div class="modal-body" id="display-details-modal-body">
+                <div class="row meta">
+                    <div class="col-sm-2">
+                        <div class="modal-label">Date:</div>
+                        <div class="modal-text" id="display-date">--</div>
                     </div>
+                    <div class="col-sm-4">
+                        <div class="modal-label">Cold Store:</div>
+                        <div class="modal-text" id="display-cold">--</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="modal-label">Bought From</div>
+                        <div class="modal-text" id="display-seller">--</div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="modal-label">Bought By:</div>
+                        <div class="modal-text" id="display-buyer">--</div>
+                    </div>
+                </div>
                 <hr>
                 <div class="row info">
-                    <div class="col-sm-2">
-                        <div class="modal-label">Lot No:</div>
-                        <div class="modal-text">15/190</div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="modal-label">Size:</div>
-                        <div class="modal-text">Mota</div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="modal-label">Bags:</div>
-                        <div class="modal-text">150</div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="modal-label">Rate:</div>
-                        <div class="modal-text">750</div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="modal-label">Tol:</div>
-                        <div class="modal-text">52</div>
-                    </div>
+                    <span class="col-sm-2 modal-label">Lot No:</span>
+                    <span class="col-sm-2 modal-label">Size:</span>
+                    <span class="col-sm-2 modal-label">Bags:</span>
+                    <span class="col-sm-2 modal-label">Rate:</span>
+                    <span class="col-sm-2 modal-label">Tol:</span>
                 </div>
             </div>
 
@@ -123,6 +127,51 @@
 </div>
 </body>
 <script>
+    $("#display-details-modal").on('show.bs.modal', function () {
+        $.ajax('/api/cold_kharid_data', {
+            type: 'GET',
+            data: {
+                id:"60218fd508582835c4d8b4a8"
+            },
+            success: function (data, status, xhr) {
+                let result=data[0];
+                console.log(JSON.stringify(result));
+                $('#display-date')[0].innerText=result.date;
+                $('#display-cold')[0].innerText=result.cold_store[0].name;
+                $('#display-seller')[0].innerText=result.seller[0].name+" "+result.seller[0].address;
+                $('#display-buyer')[0].innerText=result.buyer_name;
+
+                let parent=document.getElementById("display-details-modal-body");
+
+                for(let deal of result.deals){
+                    let div=document.createElement("div");
+                    div.className="row info";
+                    div.innerHTML=
+                        "<div class='col-sm-2 modal-text'>"+deal.lot+"</div>" +
+                        "<div class='col-sm-2 modal-text'>"+deal.size+"</div>" +
+                        "<div class='col-sm-2 modal-text'>"+deal.bags+"</div>" +
+                        "<div class='col-sm-2 modal-text'>"+deal.rate+"</div>" +
+                        "<div class='col-sm-2 modal-text'>"+deal.tol+"</div>";
+                    parent.appendChild(div);
+                }
+                let path="'google.com'";
+                if(result.image_ids.length>0){
+                    parent.appendChild(document.createElement("hr"));
+                    let div=document.createElement("div");
+                    div.className="row image";
+                    div.innerHTML="<div class='col-sm-2 modal-label'>Images:</div>"
+                    for(let id of result.image_ids){
+                        div.innerHTML += "<div class='col-sm-1'><button class='btn-img' title='Click to view image!' onclick='window.open("+'"api/image?id='+id+'"'+");'><i class='fa fa-file-photo-o'></i></button></div>";
+                    }
+                    parent.appendChild(div);
+                }
+
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                window.alert(errorMessage);
+            }
+        });
+    });
     $('#display-details-modal').modal('show');
 </script>
 </html>
