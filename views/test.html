@@ -159,7 +159,7 @@
                     parent.appendChild(document.createElement("hr"));
                     let div=document.createElement("div");
                     div.className="row image";
-                    div.innerHTML="<div class='col-sm-2 modal-label'>Images:</div>"
+                    div.innerHTML="<div class='modal-label'>Images:</div>"
                     for(let id of result.image_ids){
                         div.innerHTML += "<div class='col-sm-1'><button class='btn-img' title='Click to view image!' onclick='window.open("+'"api/image?id='+id+'"'+");'><i class='fa fa-file-photo-o'></i></button></div>";
                     }

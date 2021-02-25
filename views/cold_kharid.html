@@ -6,6 +6,56 @@
         border-radius: 10px;
         font-family: Gadugi, Arial, sans-serif;
     }
+    .modal-label{
+        font-weight: bold;
+        font-size: 16px;
+    }
+    .modal-text{
+        font-size: 15px;
+    }
+    .modal-text, .modal-label{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .info .col-sm-2{
+        max-width: 20%;
+        min-width: 20%;
+    }
+
+    .row.info{
+        font-size: 0;
+        margin-bottom: 2px;
+    }
+
+    .row.image{
+        margin-bottom: 2px;
+    }
+    .btn-img{
+        padding: 0;
+        border: 0;
+        width: 30px;
+        height: 30px;
+        background: transparent;
+        font-size: 20px;
+        border-radius: 15px;
+    }
+
+    .row.info:nth-child(even){
+        background-color: #f6f6f6;
+    }
+
+    .modal-text:hover{
+        overflow: visible;
+        white-space: normal;
+        word-break: break-word;
+    }
+    .btn-img:focus{
+        outline: none;
+    }
+    .btn-img:hover{
+        box-shadow: 0 5px 15px rgba(150, 150, 150, 0.4);
+    }
     @media screen and (max-width: 600px) {
         .input-group-prepend{
             display: none;
@@ -13,10 +63,31 @@
         .form-row .col .input-group .form-control, .form-row .col-sm-4 .input-group .form-control{
             min-width: 100px;
             border-radius: 5px;
+        }
+        .form-row .col .input-group, .form-row .col-sm-4 .input-group, .form-row .col .custom-file{
             margin-bottom: 4px;
         }
-        .col-sm-2{
-            margin-top: 4px;
+        .modal-label{
+            font-size: 11px;
+        }
+        .modal-text{
+            font-size: 10px;
+        }
+        .col-sm-2, .col-sm-4, .col-sm-1{
+            display: inline-block;
+        }
+        .info .col-sm-2, .image .col-sm-2{
+            max-width: 20%;
+            min-width: 20%;
+        }
+        .image .col-sm-1{
+            max-width: 9%;
+            min-width: 9%;
+        }
+        .meta .col-sm-2, .meta .col-sm-4{
+            max-width: 49%;
+            min-width: 49%;
+            margin-bottom: 5px;
         }
     }
 </style>
@@ -252,8 +323,25 @@
                 <p id="alert-model-message" style="text-align: center"></p>
             </div>
             <div class="modal-footer" id="info-modal-footer">
-                <button class="btn btn-success" type="button" id="alert-view-btn">View</button>
+                <button class="btn btn-success" type="button" id="alert-view-btn" data-toggle="modal" data-target="#display-details-modal">View</button>
                 <button class="btn btn-primary" data-dismiss="modal" type="button" id="alert-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="display-details-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cold Kharid</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="display-details-modal-body">
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -314,6 +402,34 @@
         <div class="col-lg-push-0">
             <button class="btn btn-primary" style="width: 2.5em" onclick="removeRow(this)">-</button>
         </div>
+    </div>
+</template>
+<template>
+    <div class="row meta">
+        <div class="col-sm-2">
+            <div class="modal-label">Date:</div>
+            <div class="modal-text" id="display-date">--</div>
+        </div>
+        <div class="col-sm-4">
+            <div class="modal-label">Cold Store:</div>
+            <div class="modal-text" id="display-cold">--</div>
+        </div>
+        <div class="col-sm-4">
+            <div class="modal-label">Bought From</div>
+            <div class="modal-text" id="display-seller">--</div>
+        </div>
+        <div class="col-sm-2">
+            <div class="modal-label">Bought By:</div>
+            <div class="modal-text" id="display-buyer">--</div>
+        </div>
+    </div>
+    <hr>
+    <div class="row info">
+        <span class="col-sm-2 modal-label">Lot No:</span>
+        <span class="col-sm-2 modal-label">Size:</span>
+        <span class="col-sm-2 modal-label">Bags:</span>
+        <span class="col-sm-2 modal-label">Rate:</span>
+        <span class="col-sm-2 modal-label">Tol:</span>
     </div>
 </template>
 
@@ -391,6 +507,57 @@
         $("#newSeller_Modal").on('hidden.bs.modal', function () {
             document.getElementById("seller-name-list").selectedIndex=0;
         });
+        $("#display-details-modal").on('show.bs.modal', function () {
+            let id=$('#alert-view-btn')[0].value;
+            $.ajax('/api/cold_kharid_data', {
+                type: 'GET',
+                data: {
+                    id:id
+                },
+                success: function (data, status, xhr) {
+                    let result=data[0];
+
+                    let parent=document.getElementById("display-details-modal-body");
+                    let template = document.getElementsByTagName("template")[1];
+                    let node = template.content.cloneNode(true);
+                    parent.appendChild(node);
+
+                    $('#display-date')[0].innerText=result.date;
+                    $('#display-cold')[0].innerText=result.cold_store[0].name;
+                    $('#display-seller')[0].innerText=result.seller[0].name+" "+result.seller[0].address;
+                    $('#display-buyer')[0].innerText=result.buyer_name;
+
+                    for(let deal of result.deals){
+                        let div=document.createElement("div");
+                        div.className="row info";
+                        div.innerHTML=
+                            "<div class='col-sm-2 modal-text'>"+deal.lot+"</div>" +
+                            "<div class='col-sm-2 modal-text'>"+deal.size+"</div>" +
+                            "<div class='col-sm-2 modal-text'>"+deal.bags+"</div>" +
+                            "<div class='col-sm-2 modal-text'>"+deal.rate+"</div>" +
+                            "<div class='col-sm-2 modal-text'>"+deal.tol+"</div>";
+                        parent.appendChild(div);
+                    }
+                    let path="'google.com'";
+                    if(result.image_ids.length>0){
+                        parent.appendChild(document.createElement("hr"));
+                        let div=document.createElement("div");
+                        div.className="row image";
+                        for(let id of result.image_ids){
+                            div.innerHTML += "<div class='col-sm-1'><button class='btn-img' title='Click to view image!' onclick='window.open("+'"api/image?id='+id+'"'+");'><i class='fa fa-file-photo-o'></i></button></div>";
+                        }
+                        parent.appendChild(div);
+                    }
+
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    window.alert(errorMessage);
+                }
+            });
+        });
+        $("#display-details-modal").on('hidden.bs.modal', function (){
+            document.getElementById("display-details-modal-body").innerHTML = "";
+        });
 
     }
     function showModal(option, modalId){
@@ -424,7 +591,6 @@
         });
         return false;
     }
-
     function saveNewSellerDetails(){
         document.getElementById('new-seller-progress').innerHTML="<i class='fa fa-2x fa-spinner fa-pulse'></i>";
         $.ajax('/api/save_new_seller', {
@@ -448,7 +614,6 @@
         });
         return false;
     }
-
     function saveColdKharidDetails() {
         $('#alert-close-btn').attr("disabled", "disabled");
         $('#alert-view-btn').attr("disabled", "disabled");
@@ -502,7 +667,7 @@
             success: function (data, status, xhr) {
                 console.log(JSON.stringify(data));
                 $('#alert-model-message')[0].innerHTML = "Saved Successfully!";
-                $('#alert-view-btn').attr("onclick", "location.href='/api/display_cold_kharid?id="+data.parentResult.insertedId+"'");
+                $('#alert-view-btn')[0].value=data.parentResult.insertedId;
                 $('#alert-view-btn').removeAttr('disabled');
                 resetForm();
             },

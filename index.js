@@ -35,9 +35,6 @@ app.get('/self_entry', (req, res)=>{
 app.get('/display_cold_kharid', (req, res)=>{
     res.end('Working');
 });
-app.get('/api/display_cold_kharid', (req, res)=>{
-    res.end('Working');
-});
 app.post('/api/save_new_cold', async (req, res)=>{
     if(util.verifyInputs([req.body.name, req.body.bag, req.body.due])) {
         let result = await controller.saveColdStoreDetails(req.body.name, req.body.bag, req.body.due);
